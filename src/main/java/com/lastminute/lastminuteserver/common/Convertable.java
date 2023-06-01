@@ -1,5 +1,7 @@
 package com.lastminute.lastminuteserver.common;
 
+import com.lastminute.lastminuteserver.exceptions.EnumNotFoundException;
+
 public interface Convertable {
     Object getKey();
 
@@ -12,6 +14,6 @@ public interface Convertable {
                 return enumValue;
             }
         }
-        throw new RuntimeException("key에 해당하는 enum을 찾을 수 없습니다. : " + key);
+        throw new EnumNotFoundException("key에 해당하는 enum을 찾을 수 없습니다. : " + key);
     }
 }
