@@ -55,7 +55,7 @@ public class UserService {
         return UserProfileDto.of(user);
     }
 
-    public void withdrawUser(Long userId) {
+    public UserProfileDto withdrawUser(Long userId) {
         User user = findUserInternal(userId);
 
         if (user.getAccountState().equals(AccountState.WITHDRAWN)) {
@@ -63,7 +63,9 @@ public class UserService {
         }
 
         user.withdraw();
-        userRepository.save(user);
+        user = userRepository.save(user);
+
+        return UserProfileDto.of(user);
     }
 
     private User findUserInternal(Long userId) {

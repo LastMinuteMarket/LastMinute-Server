@@ -15,6 +15,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "users")
 public class User {
 
+    public static final String WITH_DRAWN_NICKNAME = "탈퇴한 사용자";
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -42,7 +44,7 @@ public class User {
     ProviderType providerType;
 
     public void withdraw() {
-        this.updateProfile("탈퇴한 사용자", null);
+        this.updateProfile(WITH_DRAWN_NICKNAME, null);
         this.accountState = AccountState.WITHDRAWN;
     }
 

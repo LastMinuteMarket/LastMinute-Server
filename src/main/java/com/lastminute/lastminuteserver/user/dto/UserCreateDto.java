@@ -2,6 +2,7 @@ package com.lastminute.lastminuteserver.user.dto;
 
 import com.lastminute.lastminuteserver.common.EnumValid;
 import com.lastminute.lastminuteserver.user.domain.ProviderType;
+import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.annotation.Nullable;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotNull;
@@ -23,4 +24,12 @@ public record UserCreateDto (
     @EnumValid(enumClass = ProviderType.class, message = "지원하지 않는 provider 입니다.")
     ProviderType providerType
 ) {
+
+    public User toEntity() {
+        return User.builder()
+                .nickname(this.nickname)
+                .email(this.email)
+                .providerType(this.providerType)
+                .build();
+    }
 }
