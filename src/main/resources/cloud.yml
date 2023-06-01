@@ -1,0 +1,13 @@
+cloud:
+  aws:
+    s3:
+      bucket: com.lastminute.bucket
+      base-url: base_url
+      credentials:
+        access-key: access_key
+        secret-key: secret
+    region:
+      static: ap-northeast-2
+      auto: false
+    stack:
+      auto: false
