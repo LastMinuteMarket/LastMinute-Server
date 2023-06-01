@@ -1,5 +1,6 @@
 package com.lastminute.lastminuteserver.common;
 
+import com.lastminute.lastminuteserver.exceptions.EnumNotFoundException;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
@@ -81,7 +82,7 @@ public class EnumValidatorTest {
 
     static class TestDto {
 
-        @EnumValidator(enumClass = TestType.class, message = "enum 변환에 실패했습니다.")
+        @EnumValid(enumClass = TestType.class, message = "enum 변환에 실패했습니다.")
         private final String testType;
 
         public TestDto(String testType) {

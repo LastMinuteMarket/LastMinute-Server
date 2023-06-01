@@ -13,7 +13,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 @NotNull
-public @interface EnumValidator {
+public @interface EnumValid {
     Class<? extends Convertable> enumClass();
     String message() default "일치하는 enum value가 없습니다.";
     Class<?>[] groups() default {};
