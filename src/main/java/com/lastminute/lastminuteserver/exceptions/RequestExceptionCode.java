@@ -14,7 +14,10 @@ public enum RequestExceptionCode {
     USER_ILLEGAL_STATE(HttpStatus.UNPROCESSABLE_ENTITY, "상태 변경이 허용되지 않는 사용자입니다."),
 
     FORBIDDEN_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 금지 이름이 없습니다."),
-    FORBIDDEN_NAME_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 금지 이름입니다.")
+    FORBIDDEN_NAME_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 금지 이름입니다."),
+
+    PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 결제 내역과 일치하는 정보가 없습니다"),
+    PAYMENT_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "내부적으로 발생한 에러로 결제에 실패했습니다.");
     ;
 
     private final HttpStatus httpStatus;
