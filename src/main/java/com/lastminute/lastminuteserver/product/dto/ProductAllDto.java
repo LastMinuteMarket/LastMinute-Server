@@ -12,18 +12,12 @@ import java.util.List;
 
 @Builder
 public record ProductAllDto(
-        @NotNull
-        Long productId,
-        @NotNull
-        UserProfileDto writer,
-        @NotNull
-        PlacementDto placement,
-        @NotNull
-        ProductDetailDto detail,
-        @NotNull
-        Integer priceNow,
-        @NotNull
-        List<MultipartFile> images
+        @NotNull Long productId,
+        @NotNull UserProfileDto writer,
+        @NotNull PlacementDto placement,
+        @NotNull ProductDetailDto detail,
+        @NotNull Integer priceNow,
+        @NotNull List<MultipartFile> images
 ) {
 
     public void putImage(MultipartFile file) {

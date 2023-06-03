@@ -30,15 +30,24 @@ public class Product {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "writer_id", referencedColumnName = "id")
+    @JoinColumn(name = "writer_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User writer;
+
+    @Column(name = "wrier_id")
+    private Long writerId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumns ({
-        @JoinColumn(name = "placement_title", referencedColumnName = "menu"),
-        @JoinColumn(name = "placement_road_address", referencedColumnName = "road_address")
+        @JoinColumn(name = "placement_title", referencedColumnName = "menu", insertable = false, updatable = false),
+        @JoinColumn(name = "placement_road_address", referencedColumnName = "road_address", insertable = false, updatable = false)
     })
     private Placement placement;
+
+    @Column(name = "placement_title")
+    private String placementTitle;
+
+    @Column(name = "placement_road_address")
+    private String placementRoadAddress;
 
     @NotNull
     @Column(length = 100)
@@ -105,6 +114,10 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private final Set<PriceSchedule> priceSchedules = new HashSet<>();
 
+    public boolean isVisible() {
+        return this.productState != ProductState.HIDDEN;
+    }
+
     public void setProductState(ProductState productState) {
         this.productState = productState;
     }
@@ -130,8 +143,9 @@ public class Product {
     }
 
     @Builder
-    public Product(User writer,
-                   Placement placement,
+    public Product(Long writerId,
+                   String placementTitle,
+                   String placementRoadAddress,
                    String menu,
                    String description,
                    Integer reservedPeoples,
@@ -140,8 +154,9 @@ public class Product {
                    Integer pricePaid,
                    Integer priceNow,
                    ProductState productState) {
-        this.writer = writer;
-        this.placement = placement;
+        this.writerId = writerId;
+        this.placementTitle = placementTitle;
+        this.placementRoadAddress = placementRoadAddress;
         this.menu = menu;
         this.description = description;
         this.reservedPeoples = reservedPeoples;
