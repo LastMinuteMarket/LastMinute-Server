@@ -48,6 +48,10 @@ public class User {
         this.accountState = AccountState.WITHDRAWN;
     }
 
+    public void updateProfile(String nickname) {
+        updateProfile(nickname, this.email);
+    }
+
     public void updateProfile(String nickname, String email) {
         if (!this.accountState.isAccessible()) {
             throw RequestException.of(RequestExceptionCode.USER_ILLEGAL_STATE);

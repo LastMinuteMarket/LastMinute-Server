@@ -49,7 +49,7 @@ public class UserService {
 
         validateUserName(request.nickname());
 
-        user.updateProfile(request.nickname(), request.email());
+        user.updateProfile(request.nickname());
         user = userRepository.save(user);
 
         return UserProfileDto.of(user);

@@ -14,7 +14,7 @@ public enum InstallmentPeriod implements Convertable {
     A_YEAR(12),
     TWO_YEAR(24);
 
-    private final Integer key;
+    private final Integer convertKey;
 
     public static InstallmentPeriod findByKey(Object key){
         return Convertable.findByKey(key, InstallmentPeriod.class);
