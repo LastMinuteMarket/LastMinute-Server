@@ -1,7 +1,7 @@
-package com.lastminute.lastminuteserver.payment.service;
+package com.lastminute.lastminuteserver.purchase.service;
 
-import com.lastminute.lastminuteserver.payment.dto.PaymentBridgeCreateDto;
-import com.lastminute.lastminuteserver.payment.dto.PaymentCreateDto;
+import com.lastminute.lastminuteserver.purchase.dto.PaymentBridgeCreateDto;
+import com.lastminute.lastminuteserver.purchase.dto.PaymentCreateDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 

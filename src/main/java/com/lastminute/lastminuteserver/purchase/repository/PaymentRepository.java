@@ -1,6 +1,6 @@
-package com.lastminute.lastminuteserver.payment.repository;
+package com.lastminute.lastminuteserver.purchase.repository;
 
-import com.lastminute.lastminuteserver.payment.domain.Payment;
+import com.lastminute.lastminuteserver.purchase.domain.Payment;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

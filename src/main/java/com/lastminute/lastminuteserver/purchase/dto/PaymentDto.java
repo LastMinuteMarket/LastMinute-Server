@@ -1,6 +1,6 @@
-package com.lastminute.lastminuteserver.payment.dto;
+package com.lastminute.lastminuteserver.purchase.dto;
 
-import com.lastminute.lastminuteserver.payment.domain.Payment;
+import com.lastminute.lastminuteserver.purchase.domain.Payment;
 import lombok.Builder;
 
 import java.time.LocalDateTime;

@@ -1,12 +1,12 @@
-package com.lastminute.lastminuteserver.payment.service;
+package com.lastminute.lastminuteserver.purchase.service;
 
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
-import com.lastminute.lastminuteserver.payment.domain.Payment;
-import com.lastminute.lastminuteserver.payment.dto.PaymentBridgeCreateDto;
-import com.lastminute.lastminuteserver.payment.dto.PaymentCreateDto;
-import com.lastminute.lastminuteserver.payment.dto.PaymentDto;
-import com.lastminute.lastminuteserver.payment.repository.PaymentRepository;
+import com.lastminute.lastminuteserver.purchase.domain.Payment;
+import com.lastminute.lastminuteserver.purchase.dto.PaymentBridgeCreateDto;
+import com.lastminute.lastminuteserver.purchase.dto.PaymentCreateDto;
+import com.lastminute.lastminuteserver.purchase.dto.PaymentDto;
+import com.lastminute.lastminuteserver.purchase.repository.PaymentRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;

@@ -1,8 +1,8 @@
-package com.lastminute.lastminuteserver.payment.dto;
+package com.lastminute.lastminuteserver.purchase.dto;
 
 import com.lastminute.lastminuteserver.common.EnumValid;
-import com.lastminute.lastminuteserver.payment.domain.InstallmentPeriod;
-import com.lastminute.lastminuteserver.payment.domain.PaymentMethod;
+import com.lastminute.lastminuteserver.purchase.domain.InstallmentPeriod;
+import com.lastminute.lastminuteserver.purchase.domain.PaymentMethod;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;

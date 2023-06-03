@@ -1,4 +1,4 @@
-package com.lastminute.lastminuteserver.payment.domain;
+package com.lastminute.lastminuteserver.purchase.domain;
 
 import com.lastminute.lastminuteserver.product.domain.Product;
 import com.lastminute.lastminuteserver.user.domain.User;
