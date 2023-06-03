@@ -1,6 +1,7 @@
 package com.lastminute.lastminuteserver.review.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.lastminute.lastminuteserver.review.domain.Review;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -25,4 +26,13 @@ public class ReviewResponseDto {
 
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm")
     private LocalDateTime updatedAt;
+
+    public static ReviewResponseDto from(Review review){
+        return ReviewResponseDto.builder()
+                .title(review.getTitle())
+                .content(review.getContent())
+                .userNickName(review.getUser().getNickname())
+                .productId(review.getProduct().getId())
+                .build();
+    }
 }
