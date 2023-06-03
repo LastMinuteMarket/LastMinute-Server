@@ -5,21 +5,22 @@ import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.placement.service.PlacementService;
 import com.lastminute.lastminuteserver.product.domain.PriceSchedule;
+import com.lastminute.lastminuteserver.product.domain.ProductState;
 import com.lastminute.lastminuteserver.product.dto.PriceScheduleDto;
 import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
 import com.lastminute.lastminuteserver.placement.dto.PlacementDto;
 import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
+import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
 import com.lastminute.lastminuteserver.product.repository.ProductRepository;
 import com.lastminute.lastminuteserver.product.domain.Product;
-import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
-import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.*;
+import org.springframework.data.geo.Point;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -27,6 +28,9 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
+
+    // 검색 범위 2km
+    public static final int SEARCH_RANGE = 2_000;
 
     private final ProductRepository productRepository;
 
@@ -74,13 +78,35 @@ public class ProductService {
         product.putPriceSchedules(priceSchedules);
     }
 
-    public Page<ProductAllDto> searchProducts(Pageable pageable) {
-        Page<Product> products = productRepository.findAll(pageable);
-        return new PageImpl<>(
-                products.stream()
-                .map(ProductAllDto::of)
-                .collect(Collectors.toList())
+    public Slice<ProductSummaryDto> searchOpeningProducts(Point position, Pageable pageable) {
+        Slice<Product> products = productRepository.searchByLocation(
+                position,
+                ProductState.OPEN,
+                SEARCH_RANGE,
+                pageable
         );
+
+        return new SliceImpl<>(
+                products.stream()
+                        .map(ProductSummaryDto::of)
+                        .collect(Collectors.toList())
+        );
+    }
+
+    public Slice<ProductSummaryDto> searchOpeningProducts(Point position, LocalDateTime startTime, LocalDateTime endTime, Pageable pageable) {
+        Slice<Product> products = productRepository.searchByLocationAndTime(
+                position,
+                ProductState.OPEN,
+                SEARCH_RANGE,
+                startTime,
+                endTime,
+                pageable
+        );
+
+        return new SliceImpl<>(
+                products.stream()
+                        .map(ProductSummaryDto::of)
+                        .collect(Collectors.toList()));
     }
 
     public ProductAllDto getProductById(Long productId) {
