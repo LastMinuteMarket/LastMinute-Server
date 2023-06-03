@@ -34,7 +34,7 @@ class ReviewServiceTest {
         // given
         given(reviewRepository.findById(reviewId)).willReturn(Optional.ofNullable(null));
         // when, then
-        assertThatThrownBy(() -> reviewService.deleteReview(reviewId))
+        assertThatThrownBy(() -> reviewService.getReview(reviewId))
                 .isInstanceOf(RequestException.class);
     }
 

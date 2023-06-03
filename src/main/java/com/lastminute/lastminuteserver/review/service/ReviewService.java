@@ -40,7 +40,7 @@ public class ReviewService {
         return null;
     }
 
-    public void deleteReview(Long reviewId){
+    public void deleteReview(Long productId, Long reviewId){
         valiedateReview(reviewId);
     }
 
