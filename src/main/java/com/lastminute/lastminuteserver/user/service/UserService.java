@@ -68,6 +68,11 @@ public class UserService {
         return UserProfileDto.of(user);
     }
 
+    public boolean isActivateUser(Long userId) {
+        User user = findUserInternal(userId);
+        return !user.getAccountState().equals(AccountState.NORMAL);
+    }
+
     private User findUserInternal(Long userId) {
         return userRepository.findById(userId)
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
