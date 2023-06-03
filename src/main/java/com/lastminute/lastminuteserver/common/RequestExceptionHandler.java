@@ -24,6 +24,6 @@ public class RequestExceptionHandler extends ResponseEntityExceptionHandler {
         log.error("occur (unexpected) internal exception", e);
         return ResponseEntity
                 .internalServerError()
-                .body(ResponseDto.empty());
+                .body(ResponseDto.emptyFail());
     }
 }

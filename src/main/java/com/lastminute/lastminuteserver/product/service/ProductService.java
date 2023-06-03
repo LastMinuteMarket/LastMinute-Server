@@ -110,8 +110,7 @@ public class ProductService {
     }
 
     public ProductAllDto getProductById(Long productId) {
-        Product product = productRepository.findById(productId)
-                .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
+        Product product = findProductInternal(productId);
 
         if (!product.isVisible()) {
             throw RequestException.of(RequestExceptionCode.PRODUCT_NOT_VISIBLE);
@@ -120,5 +119,25 @@ public class ProductService {
         product.increaseView();
         productRepository.save(product);
         return ProductAllDto.of(product);
+    }
+
+    public void deleteProduct(Long userId, Long productId) {
+        Product product = findProductInternal(productId);
+
+        if (!product.getProductState().isVisible()) {
+            throw RequestException.of(RequestExceptionCode.PRODUCT_ALREADY_HIDDEN);
+        }
+
+        if (!Objects.equals(userId, product.getWriterId())) {
+            throw RequestException.of(RequestExceptionCode.PRODUCT_FORBIDDEN);
+        }
+
+        product.setProductState(ProductState.HIDDEN);
+        productRepository.save(product);
+    }
+
+    private Product findProductInternal(Long productId) {
+        return productRepository.findById(productId)
+                .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
     }
 }

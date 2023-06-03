@@ -9,8 +9,12 @@ public record ResponseDto<T> (
     String errorCode
 ) {
 
-    public static ResponseDto<Void> empty() {
+    public static ResponseDto<Void> emptyFail() {
         return new ResponseDto<>(false, null, null, null);
+    }
+
+    public static ResponseDto<String> emptySuccess() {
+        return new ResponseDto<>(true, "요청을 완료했습니다.", null, null);
     }
 
     public static ResponseDto<Void> of(RequestExceptionCode code) {
