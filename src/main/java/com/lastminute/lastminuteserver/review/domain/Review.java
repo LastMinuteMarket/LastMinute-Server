@@ -42,11 +42,11 @@ public class Review {
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User user; // review : user 는 다대일 단방향
+    private User user;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "product_id")
-    private Product product; // review : product 는 다대일 단방향
+    private Product product;
 
     @Builder
     public Review(String title, String content, User user, Product product){

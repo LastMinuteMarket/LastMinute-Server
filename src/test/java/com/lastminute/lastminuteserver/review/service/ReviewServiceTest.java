@@ -12,8 +12,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.mockito.BDDMockito.given;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
 class ReviewServiceTest {
@@ -27,10 +27,12 @@ class ReviewServiceTest {
     @InjectMocks
     private ReviewService reviewService;
 
+    Long productId = 1L;
+    Long reviewId = 1L;
+
     @Test
-    @DisplayName("DB의 review 테이블에 없는 reviewId일 경우 RequestException 예외 리턴")
+    @DisplayName("DB의 review 테이블에 없는 reviewId일 경우 RequestException 예외를 리턴한다")
     public void raiseReviewRequestException(){
-        Long reviewId = 1L;
         // given
         given(reviewRepository.findById(reviewId)).willReturn(Optional.ofNullable(null));
         // when, then
@@ -39,9 +41,8 @@ class ReviewServiceTest {
     }
 
     @Test
-    @DisplayName("DB의 product 테이블에 없는 productId 경우 RequestException 예외 리턴")
+    @DisplayName("DB의 product 테이블에 없는 productId 경우 RequestException 예외를 리턴한다")
     public void raiseProductRequestException(){
-        Long productId = 1L;
         // given
         given(productRepository.findById(productId)).willReturn(Optional.ofNullable(null));
         // when, then

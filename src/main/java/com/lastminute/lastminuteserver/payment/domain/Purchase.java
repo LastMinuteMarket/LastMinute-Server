@@ -1,5 +1,7 @@
 package com.lastminute.lastminuteserver.payment.domain;
 
+import com.lastminute.lastminuteserver.product.domain.Product;
+import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
@@ -15,14 +17,10 @@ import java.time.LocalDateTime;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "payment")
-public class Payment {
+public class Purchase {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    @NotNull
-    private Long pgId; // PG사의 결제 정보와 연결되는 ID
 
     @NotNull
     @Column(length = 10)
@@ -34,6 +32,11 @@ public class Payment {
     InstallmentPeriod installmentPeriod;
 
     @NotNull
+    @Column(length = 10)
+    @Enumerated(EnumType.STRING)
+    PurchaseState purchaseState;
+
+    @NotNull
     private Integer originalPrice;
 
     @NotNull
@@ -43,22 +46,31 @@ public class Payment {
     private Integer finalPrice;
 
     @CreatedDate
-    @Column(updatable = false)
+    @Column(nullable = false, updatable = false)
     private LocalDateTime acceptedAt;
 
     @NotNull
     private Boolean cancelAvailable = true;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @ManyToOne(optional = false, fetch = FetchType.LAZY)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
 
     public void setCancelUnAvailable(){
         this.cancelAvailable = false;
     }
 
     @Builder
-    public Payment(Long pgId, PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod,
+    public Purchase(PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod, PurchaseState purchaseState,
                    Integer originalPrice, Integer fee, Integer finalPrice){
-        this.pgId = pgId;
         this.paymentMethod = paymentMethod;
         this.installmentPeriod = installmentPeriod;
+        this.purchaseState = purchaseState;
         this.originalPrice = originalPrice;
         this.fee = fee;
         this.finalPrice = finalPrice;

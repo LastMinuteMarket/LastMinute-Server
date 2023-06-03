@@ -1,8 +1,10 @@
 package com.lastminute.lastminuteserver.review.dto;
 
 import jakarta.validation.constraints.Size;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 
+@AllArgsConstructor
 @Getter
 public class ReviewRequestDto {
     @Size(min = 5, max = 100, message = "5~100 글자 사이로 입력해야 합니다.")

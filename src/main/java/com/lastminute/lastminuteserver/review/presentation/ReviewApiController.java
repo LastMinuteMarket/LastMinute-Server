@@ -25,8 +25,9 @@ public class ReviewApiController {
 
     @DeleteMapping(value = "{productId}/review/{reviewId}")
     public ResponseEntity<Object> deleteReview(@PathVariable("productId") Long productId,
-                                               @PathVariable("reviewId") Long reviewId){
-        reviewService.deleteReview(productId, reviewId);
+                                               @PathVariable("reviewId") Long reviewId,
+                                               Long userId){
+        reviewService.deleteReview(productId, reviewId, userId);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
 }
