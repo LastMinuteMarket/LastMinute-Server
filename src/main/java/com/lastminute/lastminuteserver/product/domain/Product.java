@@ -3,8 +3,8 @@ package com.lastminute.lastminuteserver.product.domain;
 import com.lastminute.lastminuteserver.placement.domain.Placement;
 import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,43 +35,75 @@ public class Product {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumns ({
-        @JoinColumn(name = "placement_title", referencedColumnName = "title"),
+        @JoinColumn(name = "placement_title", referencedColumnName = "menu"),
         @JoinColumn(name = "placement_road_address", referencedColumnName = "road_address")
     })
     private Placement placement;
 
     @NotNull
     @Column(length = 100)
-    private String title;
+    private String menu;
 
     @NotNull
-    @Column(length = 1_000)
-    private String content;
+    @Column(length = 1000)
+    private String description;
 
     @NotNull
-    @Size(min = 0, max = 1_000_000_000)
-    private Integer price;
+    @Column(name = "reserved_peoples")
+    @Min(value = 0)
+    private Integer reservedPeoples;
 
     @NotNull
+    @Column(name = "reserved_time")
+    private LocalDateTime reservedTime;
+
+    @NotNull
+    @Column(name = "reservation_type", length = 10)
+    @Enumerated(EnumType.STRING)
+    private ReservationType reservationType;
+
+    @NotNull
+    @Column(name = "price_paid")
+    @Min(value = 0)
+    private Integer pricePaid;
+
+    @NotNull
+    @Column(name = "price_now")
+    @Min(value = 0)
+    private Integer priceNow;
+
+    @NotNull
+    @Column
+    @Min(value = 0)
     private Integer views = 0;
 
     @NotNull
-    @Column(length = 8)
+    @Column(name = "product_state", length = 8)
     @Enumerated(EnumType.STRING)
-    ProductState productState = ProductState.OPEN;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
-    private final Set<ProductImage> images = new HashSet<>();
+    private ProductState productState = ProductState.OPEN;
 
     @NotNull
-    @Column(updatable = false)
+    @Column(name = "created_at", updatable = false)
     @CreatedDate
     private LocalDateTime createdAt;
 
     @NotNull
-    @Column
+    @Column(name = "updated_at")
     @LastModifiedDate
     private LocalDateTime updatedAt;
+
+    @Version
+    @Column(name = "opt_lock")
+    private Integer optLock = 0;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private final Set<ProductImage> images = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private final Set<ProductLike> likes = new HashSet<>();
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    private final Set<PriceSchedule> priceSchedules = new HashSet<>();
 
     public void setProductState(ProductState productState) {
         this.productState = productState;
@@ -85,13 +117,38 @@ public class Product {
         this.images.remove(image);
     }
 
+    public void putPriceSchedule(PriceSchedule priceSchedule) {
+        this.priceSchedules.add(priceSchedule);
+    }
+
+    public void putPriceSchedules(Collection<PriceSchedule> priceSchedules) {
+        this.priceSchedules.addAll(priceSchedules);
+    }
+
+    public void increaseView() {
+        this.views++;
+    }
+
     @Builder
-    public Product(User writer, Placement placement, String title, String content, Integer price, ProductState productState) {
+    public Product(User writer,
+                   Placement placement,
+                   String menu,
+                   String description,
+                   Integer reservedPeoples,
+                   LocalDateTime reservedTime,
+                   ReservationType reservationType,
+                   Integer pricePaid,
+                   Integer priceNow,
+                   ProductState productState) {
         this.writer = writer;
         this.placement = placement;
-        this.title = title;
-        this.content = content;
-        this.price = price;
+        this.menu = menu;
+        this.description = description;
+        this.reservedPeoples = reservedPeoples;
+        this.reservedTime = reservedTime;
+        this.reservationType = reservationType;
+        this.pricePaid = pricePaid;
+        this.priceNow = priceNow;
         this.productState = productState;
     }
 }
