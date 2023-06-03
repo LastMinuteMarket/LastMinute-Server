@@ -31,9 +31,11 @@ public class Review {
     private String content;
 
     @CreatedDate
+    @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedDate
+    @Column(nullable = false, updatable = true)
     private LocalDateTime updatedAt;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
