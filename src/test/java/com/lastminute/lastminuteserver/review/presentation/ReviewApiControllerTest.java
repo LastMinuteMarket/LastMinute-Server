@@ -26,8 +26,8 @@ class ReviewApiControllerTest {
     private ReviewService reviewService;
 
     @Test
-    @DisplayName("Request Exception 핸들러가 동작하는지 확인한다")
-    public void getCustomException() throws Exception {
+    @DisplayName("Product 서비스의 Request Exception 핸들러가 동작하는지 확인한다")
+    public void throwProductRequestException() throws Exception {
         Long productId = 1L;
         // given
         given(reviewService.getReviewListByProduct(productId))
@@ -39,4 +39,5 @@ class ReviewApiControllerTest {
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
 }
