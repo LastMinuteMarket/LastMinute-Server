@@ -1,13 +1,11 @@
 package com.lastminute.lastminuteserver.purchase.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.lastminute.lastminuteserver.product.domain.Product;
 import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -15,9 +13,11 @@ import java.time.LocalDateTime;
 
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 public class Purchase {
+    @JsonIgnore
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,13 +34,13 @@ public class Purchase {
     @NotNull
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
-    PurchaseState purchaseState;
+    PurchaseState purchaseState = PurchaseState.PAID;
 
     @NotNull
     private Integer originalPrice;
 
     @NotNull
-    private Integer fee;
+    private Integer fee = 10;
 
     @NotNull
     private Integer finalPrice;
@@ -48,9 +48,6 @@ public class Purchase {
     @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime acceptedAt;
-
-    @NotNull
-    private Boolean cancelAvailable = true;
 
     @ManyToOne(optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -60,19 +57,14 @@ public class Purchase {
     @JoinColumn(name = "product_id")
     private Product product;
 
-
-    public void setCancelUnAvailable(){
-        this.cancelAvailable = false;
-    }
-
     @Builder
-    public Purchase(PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod, PurchaseState purchaseState,
-                   Integer originalPrice, Integer fee, Integer finalPrice){
+    public Purchase(PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod,
+                   Integer originalPrice, User user, Product product){
         this.paymentMethod = paymentMethod;
         this.installmentPeriod = installmentPeriod;
-        this.purchaseState = purchaseState;
         this.originalPrice = originalPrice;
-        this.fee = fee;
-        this.finalPrice = finalPrice;
+        this.user = user;
+        this.product = product;
+        this.finalPrice = (int)originalPrice * (fee / 100);
     }
 }

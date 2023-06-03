@@ -19,6 +19,7 @@ public enum RequestExceptionCode {
 
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 결제 내역과 일치하는 정보가 없습니다"),
     PAYMENT_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "내부적으로 발생한 에러로 결제에 실패했습니다."),
+    PAYMENT_OVER_CANCEL_PERIOD(HttpStatus.PRECONDITION_FAILED, "결제를 취소할 수 있는 기간이 지났습니다."),
 
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 리뷰가 없습니다."),
     PRODUCT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 상품이 없습니다.");

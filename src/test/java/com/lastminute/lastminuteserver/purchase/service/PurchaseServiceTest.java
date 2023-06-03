@@ -1,10 +1,7 @@
 package com.lastminute.lastminuteserver.purchase.service;
 
 import com.lastminute.lastminuteserver.exceptions.RequestException;
-import com.lastminute.lastminuteserver.purchase.dto.PaymentBridgeCreateDto;
-import com.lastminute.lastminuteserver.purchase.dto.PaymentCreateDto;
-import com.lastminute.lastminuteserver.purchase.dto.PaymentDto;
-import com.lastminute.lastminuteserver.purchase.repository.PaymentRepository;
+import com.lastminute.lastminuteserver.purchase.repository.PurchaseRepository;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Nested;
@@ -16,22 +13,18 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
-class PaymentServiceTest {
+class PurchaseServiceTest {
 
     @Mock
-    private PaymentRepository paymentRepository;
-
-    @Mock
-    private PgAgencyAdapter pgAgencyAdapter;
+    private PurchaseRepository purchaseRepository;
 
     @InjectMocks
-    private PaymentService paymentService;
+    private PurchaseService paymentService;
 
     @Nested
     @DisplayName("결제 생성")
@@ -84,7 +77,6 @@ class PaymentServiceTest {
         }
     }
 
-    // TODO : 테스트 추가
     @Disabled
     @Nested
     @DisplayName("결제 조회")
@@ -103,7 +95,6 @@ class PaymentServiceTest {
         }
     }
 
-    // TODO : 테스트 추가
     @Disabled
     @Nested
     @DisplayName("결제 취소")
