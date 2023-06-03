@@ -1,13 +1,11 @@
 package com.lastminute.lastminuteserver.review.domain;
 
 import com.lastminute.lastminuteserver.product.domain.Product;
+import com.lastminute.lastminuteserver.review.dto.ReviewRequestDto;
 import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,10 +22,12 @@ public class Review {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Setter
     @NotNull
     @Column(length = 100)
     private String title;
 
+    @Setter
     @NotNull
     @Column(length = 1000)
     private String content;
@@ -55,4 +55,5 @@ public class Review {
         this.user = user;
         this.product = product;
     }
+
 }

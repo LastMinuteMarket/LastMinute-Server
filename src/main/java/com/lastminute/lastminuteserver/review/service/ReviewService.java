@@ -8,10 +8,14 @@ import com.lastminute.lastminuteserver.review.domain.Review;
 import com.lastminute.lastminuteserver.review.dto.ReviewRequestDto;
 import com.lastminute.lastminuteserver.review.dto.ReviewResponseDto;
 import com.lastminute.lastminuteserver.review.repository.ReviewRepository;
+import com.lastminute.lastminuteserver.user.domain.User;
+import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -19,29 +23,55 @@ public class ReviewService {
 
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
+    private final UserRepository userRepository;
 
-    public ReviewResponseDto createReview(Long productId, ReviewRequestDto reviewRequestDto){
-        validateProduct(productId);
-        return null;
+    @Transactional
+    public ReviewResponseDto createReview(Long productId, Long userId, ReviewRequestDto reviewRequestDto){
+        Product product = validateProduct(productId);
+        User user = getUser(userId);
+
+        Review review = reviewRepository.save(
+                Review.builder()
+                        .title(reviewRequestDto.getTitle())
+                        .content(reviewRequestDto.getContent())
+                        .user(user)
+                        .product(product)
+                        .build()
+        );
+        return ReviewResponseDto.from(review);
     }
 
+    @Transactional(readOnly = true)
     public List<ReviewResponseDto> getReviewListByProduct(Long productId){
-        validateProduct(productId);
-        return null;
+        Product product = validateProduct(productId);
+        List<Review> reviewList = reviewRepository.findByProduct(product);
+        return reviewList.stream()
+                .map(review -> ReviewResponseDto.from(review))
+                .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public ReviewResponseDto getReview(Long reviewId){
-        valiedateReview(reviewId);
-        return null;
+        Review review = valiedateReview(reviewId);
+        return ReviewResponseDto.from(review);
     }
 
+    @Transactional
     public ReviewResponseDto updateReview(Long reviewId, ReviewRequestDto reviewRequestDto){
-        valiedateReview(reviewId);
-        return null;
+        Review review = valiedateReview(reviewId);
+
+        review.setTitle(reviewRequestDto.getTitle());
+        review.setContent(reviewRequestDto.getContent());
+
+        return ReviewResponseDto.from(review);
     }
 
+    @Transactional
     public void deleteReview(Long productId, Long reviewId){
+        valiedateReview(productId);
         valiedateReview(reviewId);
+
+        reviewRepository.deleteById(reviewId);
     }
 
     private Review valiedateReview(Long reviewId){
@@ -52,5 +82,9 @@ public class ReviewService {
     private Product validateProduct(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
+    }
+
+    private User getUser(Long userId){
+        return userRepository.findById(userId).get();
     }
 }
