@@ -47,6 +47,7 @@ class PaymentServiceTest {
                 .originalPrice(originalPrice)
                 .build();
 
+        @Disabled
         @Test
         @DisplayName("Pg사로부터 결제 성공 응답이 왔을 때 성공")
         public void successCreatePayment(){

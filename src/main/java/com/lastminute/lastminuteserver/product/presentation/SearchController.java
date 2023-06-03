@@ -25,15 +25,15 @@ public class SearchController {
 
     @GetMapping()
     ResponseEntity<ResponseDto<?>> searchProducts(
-            @NotNull @RequestParam Double lat,
-            @NotNull @RequestParam Double lot,
-            @RequestParam LocalDateTime startTime,
-            @RequestParam LocalDateTime endTime,
+            @RequestParam Double lat,
+            @RequestParam Double lot,
+            @RequestParam(required = false) LocalDateTime startTime,
+            @RequestParam(required = false) LocalDateTime endTime,
             Pageable pageable
     ) {
         Point location = new Point(lot, lat);
         Slice<ProductSummaryDto> products;
-
+        
         if (startTime != null && endTime != null) {
             products = productService.searchOpeningProducts(location, startTime, endTime, pageable);
         } else {
