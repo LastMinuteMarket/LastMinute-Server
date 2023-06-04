@@ -2,14 +2,17 @@ package com.lastminute.lastminuteserver.user.domain;
 
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
-import com.lastminute.lastminuteserver.product.domain.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -17,7 +20,7 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "users")
-public class User {
+public class User implements UserDetails {
 
     public static final String WITH_DRAWN_NICKNAME = "탈퇴한 사용자";
 
@@ -26,11 +29,15 @@ public class User {
     private Long id;
 
     @NotNull
-    @Column(length = 12)
+    @Column(length = 12, unique = true)
     private String nickname;
 
     @Column(length = 255)
     private String email;
+
+    @NotNull
+    @Column(length = 12)
+    private String password;
 
     @NotNull
     @Column(length = 5)
@@ -66,11 +73,50 @@ public class User {
     }
 
     @Builder
-    public User(String nickname, String email, AccountRole accountRole, AccountState accountState, ProviderType providerType) {
+    public User(String nickname, String email, String password,
+                AccountRole accountRole, AccountState accountState, ProviderType providerType) {
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.accountRole = accountRole;
         this.accountState = accountState;
         this.providerType = providerType;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        Set<GrantedAuthority> roles = new HashSet<>();
+        roles.add(new SimpleGrantedAuthority(accountRole.getValue()));
+        return roles;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+    @Override
+    public String getUsername() {
+        return nickname;
+    }
+
+    @Override
+    public boolean isAccountNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return false;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return false;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return false;
     }
 }

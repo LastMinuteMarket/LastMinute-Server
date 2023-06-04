@@ -20,6 +20,10 @@ public record UserCreateDto (
     @Email(message = "이메일 형식이 올바르지 않습니다.")
     String email,
 
+    @NotNull(message = "비밀번호를 입력해주세요.")
+    @Size(min = 2, max = 12, message = "2 ~ 12자의 이름을 입력해주세요.")
+    String password,
+
     @NotNull
     @EnumValid(enumClass = ProviderType.class, message = "지원하지 않는 provider 입니다.")
     ProviderType providerType

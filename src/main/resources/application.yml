@@ -27,3 +27,6 @@ logging:
     org:
       hibernate:
         SQL: debug
+
+jwt:
+  secret: "Jmm8XCpzXdRD5VrWvH0y4zBA6hWv9r28173HmuBuUt4="

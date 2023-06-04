@@ -25,6 +25,7 @@ public class UserService {
         User user = User.builder()
                 .email(userCreate.email())
                 .nickname(userCreate.nickname())
+                .password(userCreate.password())
                 .providerType(userCreate.providerType())
                 .build();
 
