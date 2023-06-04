@@ -57,8 +57,14 @@ public class ReviewService {
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(Long reviewId, ReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto updateReview(Long reviewId, Long userId, ReviewRequestDto reviewRequestDto){
         Review review = valiedateReview(reviewId);
+        User user = getUser(userId);
+
+        if (!review.getUser().equals(user)){
+            // TODO: 전역 예외처리
+            throw new RuntimeException();
+        }
 
         review.setTitle(reviewRequestDto.getTitle());
         review.setContent(reviewRequestDto.getContent());
@@ -67,9 +73,15 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long productId, Long reviewId){
+    public void deleteReview(Long productId, Long reviewId, Long userId){
         valiedateReview(productId);
-        valiedateReview(reviewId);
+        Review review = valiedateReview(reviewId);
+        User user = getUser(userId);
+
+        if (!review.getUser().equals(user)){
+            // TODO: 전역 예외처리
+            throw new RuntimeException();
+        }
 
         reviewRepository.deleteById(reviewId);
     }
