@@ -16,7 +16,7 @@ import java.util.List;
 public class PurchaseApiController {
     private final PurchaseService purchaseService;
 
-    @PostMapping(value = "{productId}/purchase")
+    @PostMapping(value = "/{productId}/purchase")
     public ResponseEntity<PurchaseResponseDto> createPurchase(@PathVariable("productId") Long productId,
                                                               Long userId,
                                                               @Valid PurchaseCreateDto purchaseCreateDto){
@@ -24,20 +24,20 @@ public class PurchaseApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(purchaseResponseDto);
     }
 
-    @GetMapping(value = "mypage/purchase/{purchaseId}")
+    @GetMapping(value = "/mypage/purchase/{purchaseId}")
     public ResponseEntity<PurchaseResponseDto> getPurchase(@PathVariable("purchaseId") Long purchaseId,
                                                            Long userId){
         PurchaseResponseDto purchaseResponseDto = purchaseService.getPurchase(purchaseId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(purchaseResponseDto);
     }
 
-    @GetMapping(value = "mypage/purchase")
+    @GetMapping(value = "/mypage/purchase")
     public ResponseEntity<List<PurchaseResponseDto>> getPurchaseListByUser(Long userId){
         List<PurchaseResponseDto> purchaseResponseDto = purchaseService.getPurchaseListByUser(userId);
         return ResponseEntity.status(HttpStatus.OK).body(purchaseResponseDto);
     }
 
-    @DeleteMapping(value = "mypage/purchase/{purchaseId}")
+    @DeleteMapping(value = "/mypage/purchase/{purchaseId}")
     public ResponseEntity<Object> deletePurchase(@PathVariable("purchaseId") Long purchaseId, Long userId){
         purchaseService.deletePurchase(purchaseId, userId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();

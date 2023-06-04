@@ -16,7 +16,7 @@ import java.util.List;
 public class ReviewApiController {
     private final ReviewService reviewService;
 
-    @PostMapping(value = "{productId}/review")
+    @PostMapping(value = "/{productId}/review")
     public ResponseEntity<ReviewResponseDto> createReview(@PathVariable("productId") Long productId,
                                                           Long userId,
                                                           @Valid ReviewRequestDto reviewRequestDto){
@@ -24,20 +24,20 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(reviewResponseDto);
     }
 
-    @GetMapping(value = "{productId}/review")
+    @GetMapping(value = "/{productId}/review")
     public ResponseEntity<List<ReviewResponseDto>> getReviewListByProduct(@PathVariable("productId") Long productId){
         List<ReviewResponseDto> reviewResponseDtoList = reviewService.getReviewListByProduct(productId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponseDtoList);
     }
 
-    @GetMapping(value = "{productId}/review/{reviewId}")
+    @GetMapping(value = "/{productId}/review/{reviewId}")
     public ResponseEntity<ReviewResponseDto> getReview(@PathVariable("productId") Long productId,
                                                        @PathVariable("reviewId") Long reviewId){
         ReviewResponseDto reviewResponseDto = reviewService.getReview(productId, reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponseDto);
     }
 
-    @PutMapping(value = "{productId}/review/{reviewId}")
+    @PutMapping(value = "/{productId}/review/{reviewId}")
     public ResponseEntity<ReviewResponseDto> updateReview(@PathVariable("productId") Long productId,
                                                           @PathVariable("reviewId") Long reviewId,
                                                           Long userId,
@@ -46,7 +46,7 @@ public class ReviewApiController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(reviewResponseDto);
     }
 
-    @DeleteMapping(value = "{productId}/review/{reviewId}")
+    @DeleteMapping(value = "/{productId}/review/{reviewId}")
     public ResponseEntity<Object> deleteReview(@PathVariable("productId") Long productId,
                                                @PathVariable("reviewId") Long reviewId,
                                                Long userId){
