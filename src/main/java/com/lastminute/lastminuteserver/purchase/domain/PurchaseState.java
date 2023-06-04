@@ -11,9 +11,10 @@ public enum PurchaseState implements Convertable {
     COMPLETED("COMPLETED"),
     WITHDRAWN("WITHDRWAN");
 
-    private final String key;
+    private final String convertKey;
 
     public static PurchaseState findByKey(Object key){
         return Convertable.findByKey(key, PurchaseState.class);
     }
+
 }
