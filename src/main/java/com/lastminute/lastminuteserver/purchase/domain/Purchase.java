@@ -58,13 +58,15 @@ public class Purchase {
     private Product product;
 
     @Builder
-    public Purchase(PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod,
-                   Integer originalPrice, User user, Product product){
+    public Purchase(PaymentMethod paymentMethod, InstallmentPeriod installmentPeriod, Integer originalPrice){
         this.paymentMethod = paymentMethod;
         this.installmentPeriod = installmentPeriod;
         this.originalPrice = originalPrice;
-        this.user = user;
-        this.product = product;
         this.finalPrice = (int)originalPrice * (fee / 100);
+    }
+
+    public void setRelations(Product product, User user) {
+        this.product = product;
+        this.user = user;
     }
 }

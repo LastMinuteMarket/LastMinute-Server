@@ -3,6 +3,7 @@ package com.lastminute.lastminuteserver.purchase.dto;
 import com.lastminute.lastminuteserver.common.EnumValid;
 import com.lastminute.lastminuteserver.purchase.domain.InstallmentPeriod;
 import com.lastminute.lastminuteserver.purchase.domain.PaymentMethod;
+import com.lastminute.lastminuteserver.purchase.domain.Purchase;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
@@ -23,4 +24,12 @@ public class PurchaseCreateDto {
     @NotNull(message = "가격을 입력해주세요.")
     @Min(0) @Max(1000000)
     private Integer originalPrice;
+
+    public Purchase toEntity(){
+        return Purchase.builder()
+                .paymentMethod(PaymentMethod.findByKey(paymentMethod))
+                .installmentPeriod(InstallmentPeriod.findByKey(installmentPeriod))
+                .originalPrice(originalPrice)
+                .build();
+    }
 }
