@@ -5,6 +5,7 @@ import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,12 +18,18 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 @DisplayName("EnumValidator 어노테이션")
 public class EnumValidatorTest {
 
+    private static ValidatorFactory validatorFactory;
     private static Validator validator;
 
     @BeforeAll
     public static void setup() {
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
+        validatorFactory = Validation.buildDefaultValidatorFactory();
+        validator = validatorFactory.getValidator();
+    }
+
+    @AfterAll
+    public static void clear() {
+        validatorFactory.close();
     }
 
     @Test
@@ -102,7 +109,7 @@ public class EnumValidatorTest {
             this.key = key;
         }
 
-        public String getKey() {
+        public String getConvertKey() {
             return this.key;
         }
 

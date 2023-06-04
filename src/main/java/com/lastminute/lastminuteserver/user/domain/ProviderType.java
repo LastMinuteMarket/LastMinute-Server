@@ -10,9 +10,5 @@ public enum ProviderType implements Convertable {
 
     KAKAO("KAKAO");
 
-    private final String key;
-
-    public static ProviderType findByKey(String key) {
-        return Convertable.findByKey(key, ProviderType.class);
-    }
+    private final String convertKey;
 }

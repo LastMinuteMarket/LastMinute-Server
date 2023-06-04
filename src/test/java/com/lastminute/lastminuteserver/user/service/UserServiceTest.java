@@ -68,7 +68,6 @@ public class UserServiceTest {
 
             // then
             assertThat(response.userId()).isEqualTo(userId);
-            assertThat(response.email()).isEqualTo(request.email());
             assertThat(response.nickname()).isEqualTo(request.nickname());
         }
 
@@ -91,7 +90,10 @@ public class UserServiceTest {
 
             // then
             assertThat(response.userId()).isEqualTo(userId);
-            assertThat(response.email()).isNull();
+
+// 사용자 이메일을 응답에서 제외하였으므로 테스트에서 제거하였습니다.
+// since 23.06.03
+//            assertThat(response.email()).isNull();
             assertThat(response.nickname()).isEqualTo(request.nickname());
         }
         
@@ -143,7 +145,7 @@ public class UserServiceTest {
 
             // then
             assertThat(response.userId()).isEqualTo(userId);
-            assertThat(response.email()).isEqualTo(user.getEmail());
+//            assertThat(response.email()).isEqualTo(user.getEmail());
             assertThat(response.nickname()).isEqualTo(user.getNickname());
         }
 
@@ -181,7 +183,7 @@ public class UserServiceTest {
             // then
             assertThat(response.userId()).isEqualTo(userId);
             assertThat(response.nickname()).isEqualTo("탈퇴한 사용자");
-            assertThat(response.email()).isNull();
+//            assertThat(response.email()).isNull();
         }
     }
 
@@ -257,7 +259,7 @@ public class UserServiceTest {
 
             UserProfileDto request = UserProfileDto.builder()
                     .userId(userId)
-                    .email("different@gmail.com")
+//                    .email("different@gmail.com")
                     .nickname("nick")
                     .build();
 
@@ -270,7 +272,7 @@ public class UserServiceTest {
 
             // then
             assertThat(response.userId()).isEqualTo(request.userId());
-            assertThat(response.email()).isEqualTo(request.email());
+//            assertThat(response.email()).isEqualTo(request.email());
             assertThat(response.nickname()).isEqualTo(request.nickname());
         }
 
@@ -285,7 +287,7 @@ public class UserServiceTest {
             // when, then
             UserProfileDto request = UserProfileDto.builder()
                     .userId(userId)
-                    .email("different@gmail.com")
+//                    .email("different@gmail.com")
                     .nickname("nick")
                     .build();
 
@@ -314,7 +316,7 @@ public class UserServiceTest {
             // when, then
             UserProfileDto request = UserProfileDto.builder()
                     .userId(userId)
-                    .email("different@gmail.com")
+//                    .email("different@gmail.com")
                     .nickname(tryName)
                     .build();
 
@@ -325,7 +327,7 @@ public class UserServiceTest {
 
         private static User entityFromUpdateDto(UserProfileDto dto) {
             User user = User.builder()
-                    .email(dto.email())
+//                    .email(dto.email())
                     .nickname(dto.nickname())
                     .providerType(ProviderType.KAKAO)
                     .build();

@@ -49,7 +49,7 @@ public class UserService {
 
         validateUserName(request.nickname());
 
-        user.updateProfile(request.nickname(), request.email());
+        user.updateProfile(request.nickname());
         user = userRepository.save(user);
 
         return UserProfileDto.of(user);
@@ -66,6 +66,11 @@ public class UserService {
         user = userRepository.save(user);
 
         return UserProfileDto.of(user);
+    }
+
+    public boolean isActivateUser(Long userId) {
+        User user = findUserInternal(userId);
+        return !user.getAccountState().equals(AccountState.NORMAL);
     }
 
     private User findUserInternal(Long userId) {

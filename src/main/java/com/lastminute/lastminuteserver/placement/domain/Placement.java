@@ -29,4 +29,12 @@ public class Placement {
         this.placementId = placementId;
         this.location = location;
     }
+
+    @Builder
+    public Placement(String title, String roadAddress, Point location) {
+        this(PlacementId.builder()
+                .title(title)
+                .roadAddress(roadAddress)
+                .build(), location);
+    }
 }

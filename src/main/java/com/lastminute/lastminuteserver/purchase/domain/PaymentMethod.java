@@ -10,7 +10,7 @@ public enum PaymentMethod implements Convertable {
     CARD("CARD"),
     PHONE("PHONE");
 
-    private final String key;
+    private final String convertKey;
 
     public static PaymentMethod findByKey(Object key){
         return Convertable.findByKey(key, PaymentMethod.class);

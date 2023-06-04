@@ -3,14 +3,14 @@ package com.lastminute.lastminuteserver.common;
 import com.lastminute.lastminuteserver.exceptions.EnumNotFoundException;
 
 public interface Convertable {
-    Object getKey();
+    Object getConvertKey();
 
     static <E extends Convertable> E findByKey(Object key, Class<E> enumClass) {
         if (key == null) {
             return null;
         }
         for (E enumValue : enumClass.getEnumConstants()) {
-            if (key.equals(enumValue.getKey())) {
+            if (key.equals(enumValue.getConvertKey())) {
                 return enumValue;
             }
         }

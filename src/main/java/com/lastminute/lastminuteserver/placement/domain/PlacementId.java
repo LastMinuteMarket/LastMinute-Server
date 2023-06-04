@@ -19,7 +19,7 @@ public class PlacementId implements Serializable {
     @Serial
     private static final long serialVersionUID = 1230819L;
 
-    @Column(name = "title", length = 100)
+    @Column(name = "menu", length = 100)
     private String title;
 
     @Column(name = "road_address", length = 255)
