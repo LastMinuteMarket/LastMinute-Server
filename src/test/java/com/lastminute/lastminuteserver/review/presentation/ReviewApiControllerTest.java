@@ -26,15 +26,14 @@ class ReviewApiControllerTest {
     private ReviewService reviewService;
 
     @Test
-    @DisplayName("Product 서비스의 Request Exception 핸들러가 동작하는지 확인한다")
+    @DisplayName("Request Exception 핸들러가 동작하는지 확인한다")
     public void throwProductRequestException() throws Exception {
-        Long productId = 1L;
         // given
-        given(reviewService.getReviewListByProduct(productId))
+        given(reviewService.getReviewListByProduct(1L))
                 .willThrow(RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
         // when
         MockHttpServletResponse response = mockMvc
-                .perform(MockMvcRequestBuilders.get("/{productId}/review", productId))
+                .perform(MockMvcRequestBuilders.get("/{productId}/review", 1L))
                 .andReturn().getResponse();
         // then
         assertThat(response.getStatus()).isEqualTo(HttpStatus.NOT_FOUND);

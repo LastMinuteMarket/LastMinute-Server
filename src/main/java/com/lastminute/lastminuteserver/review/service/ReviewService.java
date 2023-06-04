@@ -72,11 +72,10 @@ public class ReviewService {
     }
 
     @Transactional
-    public void deleteReview(Long productId, Long userId, Long reviewId){
+    public void deleteReview(Long productId, Long reviewId, Long userId){
         valiedateReview(productId);
         Review review = valiedateReview(reviewId);
         User user = getUser(userId);
-
         if(review.getUser() != user){
             throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
         }
