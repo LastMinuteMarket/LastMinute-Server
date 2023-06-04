@@ -40,8 +40,14 @@ public class PurchaseService {
     }
 
     @Transactional(readOnly = true)
-    public PurchaseResponseDto getPurchase(Long purchaseId){
+    public PurchaseResponseDto getPurchase(Long purchaseId, Long userId){
         Purchase purchase = validatePurchase(purchaseId);
+        User user = getUser(userId);
+
+        if (purchase.getUser() != user){
+            throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
+        }
+
         return PurchaseResponseDto.from(purchase);
     }
 
@@ -54,11 +60,16 @@ public class PurchaseService {
     }
 
     @Transactional
-    public void deletePurchase(Long purchaseId){
+    public void deletePurchase(Long purchaseId, Long userId){
         Purchase purchase = validatePurchase(purchaseId);
-        if(purchase.getPurchaseState() == PurchaseState.COMPLETED){
+        User user = getUser(userId);
+        if (purchase.getPurchaseState() == PurchaseState.COMPLETED){
             throw RequestException.of(RequestExceptionCode.PAYMENT_OVER_CANCEL_PERIOD);
         }
+        if (purchase.getUser() != user){
+            throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
+        }
+
         pgAgency.deletePurchase(purchaseId);
         purchaseRepository.delete(purchase);
     }
@@ -75,4 +86,5 @@ public class PurchaseService {
     private User getUser(Long userId) {
         return userRepository.findById(userId).get();
     }
+
 }

@@ -7,10 +7,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -20,7 +17,7 @@ public class PurchaseApiController {
     private final PurchaseService purchaseService;
 
     @PostMapping(value = "{productId}/purchase")
-    public ResponseEntity<PurchaseResponseDto> createPurchase(Long productId,
+    public ResponseEntity<PurchaseResponseDto> createPurchase(@PathVariable("productId") Long productId,
                                                               Long userId,
                                                               @Valid PurchaseCreateDto purchaseCreateDto){
         PurchaseResponseDto purchaseResponseDto = purchaseService.createPurchase(productId, userId, purchaseCreateDto);
@@ -28,8 +25,9 @@ public class PurchaseApiController {
     }
 
     @GetMapping(value = "mypage/purchase/{purchaseId}")
-    public ResponseEntity<PurchaseResponseDto> getPurchase(Long purchaseId){
-        PurchaseResponseDto purchaseResponseDto = purchaseService.getPurchase(purchaseId);
+    public ResponseEntity<PurchaseResponseDto> getPurchase(@PathVariable("purchaseId") Long purchaseId,
+                                                           Long userId){
+        PurchaseResponseDto purchaseResponseDto = purchaseService.getPurchase(purchaseId, userId);
         return ResponseEntity.status(HttpStatus.OK).body(purchaseResponseDto);
     }
 
@@ -40,8 +38,8 @@ public class PurchaseApiController {
     }
 
     @DeleteMapping(value = "mypage/purchase/{purchaseId}")
-    public ResponseEntity<Object> deletePurchase(Long purchaseId){
-        purchaseService.deletePurchase(purchaseId);
+    public ResponseEntity<Object> deletePurchase(@PathVariable("purchaseId") Long purchaseId, Long userId){
+        purchaseService.deletePurchase(purchaseId, userId);
         return ResponseEntity.status(HttpStatus.ACCEPTED).build();
     }
 }
