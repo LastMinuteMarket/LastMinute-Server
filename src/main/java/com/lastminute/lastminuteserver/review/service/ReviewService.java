@@ -61,9 +61,8 @@ public class ReviewService {
         Review review = valiedateReview(reviewId);
         User user = getUser(userId);
 
-        if (!review.getUser().equals(user)){
-            // TODO: 전역 예외처리
-            throw new RuntimeException();
+        if(review.getUser() != user){
+            throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
         }
 
         review.setTitle(reviewRequestDto.getTitle());
@@ -77,10 +76,8 @@ public class ReviewService {
         valiedateReview(productId);
         Review review = valiedateReview(reviewId);
         User user = getUser(userId);
-
-        if (!review.getUser().equals(user)){
-            // TODO: 전역 예외처리
-            throw new RuntimeException();
+        if(review.getUser() != user){
+            throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
         }
 
         reviewRepository.deleteById(reviewId);
