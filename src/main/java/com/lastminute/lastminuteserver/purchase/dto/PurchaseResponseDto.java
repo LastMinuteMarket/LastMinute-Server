@@ -28,7 +28,7 @@ public class PurchaseResponseDto {
         return PurchaseResponseDto.builder()
                 .paymentMethod(purchase.getPaymentMethod().getConvertKey())
                 .installmentPeriod(purchase.getInstallmentPeriod().getConvertKey())
-                .purchaseState(purchase.getPurchaseState().getKey())
+                .purchaseState(purchase.getPurchaseState().getConvertKey())
                 .originalPrice(purchase.getOriginalPrice())
                 .fee(""+purchase.getFee()+"%")
                 .finalPrice(purchase.getFinalPrice())

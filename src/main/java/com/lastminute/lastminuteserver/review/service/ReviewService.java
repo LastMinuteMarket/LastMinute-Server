@@ -51,13 +51,18 @@ public class ReviewService {
     }
 
     @Transactional(readOnly = true)
-    public ReviewResponseDto getReview(Long reviewId){
+    public ReviewResponseDto getReview(Long productId, Long reviewId){
+        validateProduct(productId);
         Review review = valiedateReview(reviewId);
         return ReviewResponseDto.from(review);
     }
 
     @Transactional
-    public ReviewResponseDto updateReview(Long reviewId, Long userId, ReviewRequestDto reviewRequestDto){
+    public ReviewResponseDto updateReview(Long productId,
+                                          Long reviewId,
+                                          Long userId,
+                                          ReviewRequestDto reviewRequestDto){
+        validateProduct(productId);
         Review review = valiedateReview(reviewId);
         User user = getUser(userId);
 

@@ -32,8 +32,8 @@ public class ReviewApiController {
 
     @GetMapping(value = "{productId}/review/{reviewId}")
     public ResponseEntity<ReviewResponseDto> getReview(@PathVariable("productId") Long productId,
-                                                                          @PathVariable("reviewId") Long reviewId){
-        ReviewResponseDto reviewResponseDto = reviewService.getReview(reviewId);
+                                                       @PathVariable("reviewId") Long reviewId){
+        ReviewResponseDto reviewResponseDto = reviewService.getReview(productId, reviewId);
         return ResponseEntity.status(HttpStatus.OK).body(reviewResponseDto);
     }
 
@@ -42,7 +42,7 @@ public class ReviewApiController {
                                                           @PathVariable("reviewId") Long reviewId,
                                                           Long userId,
                                                           @Valid ReviewRequestDto reviewRequestDto){
-        ReviewResponseDto reviewResponseDto = reviewService.updateReview(reviewId, userId, reviewRequestDto);
+        ReviewResponseDto reviewResponseDto = reviewService.updateReview(productId, reviewId, userId, reviewRequestDto);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(reviewResponseDto);
     }
 
