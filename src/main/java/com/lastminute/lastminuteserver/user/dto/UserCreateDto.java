@@ -21,7 +21,7 @@ public record UserCreateDto (
     String email,
 
     @NotNull(message = "비밀번호를 입력해주세요.")
-    @Size(min = 2, max = 12, message = "2 ~ 12자의 이름을 입력해주세요.")
+    @Size(min = 2, max = 12, message = "2 ~ 12자의 사이로 입력해주세요.")
     String password,
 
     @NotNull
