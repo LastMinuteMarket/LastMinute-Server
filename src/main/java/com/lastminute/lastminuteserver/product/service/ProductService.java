@@ -5,14 +5,18 @@ import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.placement.service.PlacementService;
 import com.lastminute.lastminuteserver.product.domain.PriceSchedule;
+import com.lastminute.lastminuteserver.product.domain.ProductLike;
 import com.lastminute.lastminuteserver.product.domain.ProductState;
 import com.lastminute.lastminuteserver.product.dto.PriceScheduleDto;
 import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
 import com.lastminute.lastminuteserver.placement.dto.PlacementDto;
 import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
 import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
+import com.lastminute.lastminuteserver.product.repository.ProductLikeRepository;
 import com.lastminute.lastminuteserver.product.repository.ProductRepository;
 import com.lastminute.lastminuteserver.product.domain.Product;
+import com.lastminute.lastminuteserver.user.domain.User;
+import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
@@ -37,6 +41,8 @@ public class ProductService {
     private final UserService userService;
     private final PlacementService placementService;
     private final ImageFileService imageFileService;
+    private final ProductLikeRepository productLikeRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public ProductAllDto createProduct(Long writerId, ProductCreateDto request) {
@@ -136,8 +142,35 @@ public class ProductService {
         productRepository.save(product);
     }
 
+    @Transactional
+    public void likeProduct(Long userId, Long productId) {
+        Product product = findProductInternal(productId);
+
+        ProductLike productLike = ProductLike.builder()
+                .productId(productId)
+                .userId(userId)
+                .build();
+        product.addProductLike(productLike);
+    }
+
+    @Transactional
+    public void removeLikeProduct(Long userId, Long productId) {
+        Product product = findProductInternal(productId);
+        User user = getUser(userId);
+
+        ProductLike productLike = productLikeRepository.findByUserAndProduct(user, product)
+                        .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_LIKE_NOT_FOUND));
+        product.removeProductLike(productLike);
+        productLikeRepository.delete(productLike);
+    }
+
     private Product findProductInternal(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
+    }
+
+    private User getUser(Long userId){
+        return userRepository.findById(userId)
+                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
     }
 }

@@ -142,6 +142,15 @@ public class Product {
         this.views++;
     }
 
+    public void addProductLike(ProductLike productLike){
+        this.likes.add(productLike);
+    }
+
+    public void removeProductLike(ProductLike productLike){
+        this.likes.remove(productLike);
+    }
+
+
     @Builder
     public Product(Long writerId,
                    String placementTitle,

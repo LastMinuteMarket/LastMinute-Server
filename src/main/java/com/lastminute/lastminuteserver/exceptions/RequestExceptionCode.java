@@ -29,7 +29,9 @@ public enum RequestExceptionCode {
     PAYMENT_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Pg사에서 발생한 에러로 결제 취소에 실패했습니다."),
     PAYMENT_OVER_CANCEL_PERIOD(HttpStatus.PRECONDITION_FAILED, "결제를 취소할 수 있는 기간이 지났습니다."),
 
-    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 리뷰가 없습니다.");
+    REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 리뷰가 없습니다."),
+
+    PRODUCT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 로그인된 유저가 해당 상품에 대해 좋아요를 누르지 않았습니다");
 
     private final HttpStatus httpStatus;
     private final String message;

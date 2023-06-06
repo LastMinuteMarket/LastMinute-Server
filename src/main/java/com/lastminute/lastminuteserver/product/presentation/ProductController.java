@@ -1,5 +1,6 @@
 package com.lastminute.lastminuteserver.product.presentation;
 
+import com.amazonaws.Response;
 import com.lastminute.lastminuteserver.common.ResponseDto;
 import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
 import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
@@ -34,6 +35,22 @@ public class ProductController {
         return ResponseEntity
                 .status(HttpStatus.CREATED)
                 .body(ResponseDto.of(product));
+    }
+
+    @PostMapping("/{productId}/like")
+    ResponseEntity<ResponseDto<?>> likeProduct(@PathVariable("productId") Long productId,
+                                               Long userId){
+        productService.likeProduct(userId, productId);
+        return ResponseEntity
+                .ok(ResponseDto.emptySuccess());
+    }
+
+    @DeleteMapping("/{productId}/like/delete")
+    ResponseEntity<ResponseDto<?>> removeLikeProduct(@PathVariable("productId") Long productId,
+                                               Long userId){
+        productService.removeLikeProduct(userId, productId);
+        return ResponseEntity
+                .ok(ResponseDto.emptySuccess());
     }
 
     @DeleteMapping("/{productId}")
