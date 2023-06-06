@@ -2,6 +2,8 @@ package com.lastminute.lastminuteserver.user.service;
 
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.exceptions.RequestException;
+import com.lastminute.lastminuteserver.security.CustomUserDetailsService;
+import com.lastminute.lastminuteserver.security.JwtTokenProvider;
 import com.lastminute.lastminuteserver.user.domain.AccountState;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.dto.UserCreateDto;
@@ -9,26 +11,34 @@ import com.lastminute.lastminuteserver.user.dto.UserLoginDto;
 import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class UserService {
 
     private final UserRepository userRepository;
+    private final PasswordEncoder passwordEncoder;
+    private final JwtTokenProvider jwtTokenProvider;
+    private final AuthenticationManager authenticationManager;
 
     // TODO : 캐싱 처리
     private final ForbiddenNameService forbiddenNameService;
 
+    @Transactional
     public UserProfileDto createNormalUser(UserCreateDto userCreate) {
         validateUserName(userCreate.nickname());
-
-        // TODO: 회원가입 구현
 
         User user = User.builder()
                 .email(userCreate.email())
                 .nickname(userCreate.nickname())
-                .password(userCreate.password())
+                .password(passwordEncoder.encode(userCreate.password()))
                 .providerType(userCreate.providerType())
                 .build();
 
@@ -36,9 +46,21 @@ public class UserService {
         return UserProfileDto.of(user);
     }
 
+    @Transactional
     public String login(UserLoginDto userLoginDto){
-        // TODO: 로그인 구현
-        return null;
+        Authentication authentication = authentication(userLoginDto.getNickname(),
+                userLoginDto.getPassword());
+        return jwtTokenProvider.generateAccessToken(authentication);
+    }
+
+    private Authentication authentication(String nickName, String password){
+        try {
+            return authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(nickName, password)
+            );
+        } catch (Exception e){
+            throw new RuntimeException("인증 실패");
+        }
     }
 
     private void validateUserName(String nickname) {
