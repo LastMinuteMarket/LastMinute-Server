@@ -3,6 +3,7 @@ package com.lastminute.lastminuteserver.purchase.service;
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.product.domain.Product;
+import com.lastminute.lastminuteserver.product.domain.ProductState;
 import com.lastminute.lastminuteserver.product.repository.ProductRepository;
 import com.lastminute.lastminuteserver.purchase.domain.Purchase;
 import com.lastminute.lastminuteserver.purchase.domain.PurchaseState;
@@ -33,6 +34,7 @@ public class PurchaseService {
         User user = getUser(userId);
 
         Purchase purchase = pgAgency.createPurchase(purchaseCreateDto);
+        product.setProductState(ProductState.SOLD_OUT);
         purchase.setRelations(product, user);
         purchaseRepository.save(purchase);
 
