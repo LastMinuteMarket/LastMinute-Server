@@ -13,9 +13,11 @@ import com.lastminute.lastminuteserver.purchase.repository.PurchaseRepository;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -74,6 +76,15 @@ public class PurchaseService {
 
         pgAgency.deletePurchase(purchaseId);
         purchaseRepository.delete(purchase);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *", zone = "Asia/Seoul")
+    protected void changePurchaseStateAuto(){
+        LocalDateTime now = LocalDateTime.now();
+        List<Purchase> purchaseList = purchaseRepository.findAllByAcceptedAt7DaysAgo(now);
+        for (Purchase purchase : purchaseList){
+            purchase.setPurchaseState(PurchaseState.COMPLETED);
+        }
     }
 
     private Purchase validatePurchase(Long purchaseId) {
