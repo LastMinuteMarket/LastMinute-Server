@@ -44,7 +44,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                 })
                 .formLogin((formLogin) -> formLogin.disable())
                 .httpBasic((httpBasic) -> httpBasic.disable())
-                .authorizeRequests().requestMatchers("/v1/openapi/users").permitAll()
+                .authorizeRequests().requestMatchers("/v1/openapi/users/**").permitAll()
                 .and()
                 .authorizeRequests().anyRequest().authenticated()
                 .and()
