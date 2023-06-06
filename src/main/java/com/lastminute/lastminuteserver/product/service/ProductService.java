@@ -4,9 +4,7 @@ import com.lastminute.lastminuteserver.cloudfile.service.ImageFileService;
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.placement.service.PlacementService;
-import com.lastminute.lastminuteserver.product.domain.PriceSchedule;
-import com.lastminute.lastminuteserver.product.domain.ProductLike;
-import com.lastminute.lastminuteserver.product.domain.ProductState;
+import com.lastminute.lastminuteserver.product.domain.*;
 import com.lastminute.lastminuteserver.product.dto.PriceScheduleDto;
 import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
 import com.lastminute.lastminuteserver.placement.dto.PlacementDto;
@@ -14,16 +12,17 @@ import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
 import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
 import com.lastminute.lastminuteserver.product.repository.ProductLikeRepository;
 import com.lastminute.lastminuteserver.product.repository.ProductRepository;
-import com.lastminute.lastminuteserver.product.domain.Product;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.data.geo.Point;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
@@ -161,6 +160,14 @@ public class ProductService {
         ProductLike productLike = productLikeRepository.findByUserAndProduct(user, product)
                         .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_LIKE_NOT_FOUND));
         product.removeProductLike(productLike);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void applyPriceScheduling(){
+        LocalDate now = LocalDate.now();
+        productRepository.findAll().stream()
+                .filter(product -> product.getProductState().isPurchasable() == true)
+                .forEach(product -> product.applyPriceSchedule(now));
     }
 
     private Product findProductInternal(Long productId) {

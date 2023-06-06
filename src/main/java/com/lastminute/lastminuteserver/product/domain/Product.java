@@ -13,7 +13,9 @@ import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -150,6 +152,15 @@ public class Product {
         this.likes.remove(productLike);
     }
 
+    public void applyPriceSchedule(LocalDate now){
+        int diff = now.compareTo(ChronoLocalDate.from(this.createdAt));
+        for (PriceSchedule priceSchedule : priceSchedules){
+            // TODO: applyAt이 30일 이하인지 확인 필요. && 가격 미니멈?
+            if (diff % (priceSchedule.getScheduleId().getApplyAt().getDayOfMonth()) == 0){
+                this.priceNow -= priceSchedule.getPrice();
+            }
+        }
+    }
 
     @Builder
     public Product(Long writerId,
