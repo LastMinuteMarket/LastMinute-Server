@@ -161,7 +161,6 @@ public class ProductService {
         ProductLike productLike = productLikeRepository.findByUserAndProduct(user, product)
                         .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_LIKE_NOT_FOUND));
         product.removeProductLike(productLike);
-        productLikeRepository.delete(productLike);
     }
 
     private Product findProductInternal(Long productId) {

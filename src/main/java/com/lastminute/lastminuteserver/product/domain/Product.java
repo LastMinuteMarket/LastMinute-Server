@@ -108,7 +108,7 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private final Set<ProductImage> images = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
     private final Set<ProductLike> likes = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
