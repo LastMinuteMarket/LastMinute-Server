@@ -31,7 +31,9 @@ public enum RequestExceptionCode {
 
     REVIEW_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 리뷰가 없습니다."),
 
-    PRODUCT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 로그인된 유저가 해당 상품에 대해 좋아요를 누르지 않았습니다");
+    PRODUCT_LIKE_NOT_FOUND(HttpStatus.NOT_FOUND, "현재 로그인된 유저가 해당 상품에 대해 좋아요를 누르지 않았습니다"),
+
+    CHATROOM_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 채팅방이 없습니다");
 
     private final HttpStatus httpStatus;
     private final String message;
