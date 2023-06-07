@@ -29,6 +29,10 @@ public class User {
     private String email;
 
     @NotNull
+    @Column(length = 12)
+    private String password;
+
+    @NotNull
     @Column(length = 5)
     @Enumerated(EnumType.STRING)
     AccountRole accountRole = AccountRole.USER;
@@ -62,9 +66,11 @@ public class User {
     }
 
     @Builder
-    public User(String nickname, String email, AccountRole accountRole, AccountState accountState, ProviderType providerType) {
+    public User(String nickname, String email, String password,
+                AccountRole accountRole, AccountState accountState, ProviderType providerType) {
         this.nickname = nickname;
         this.email = email;
+        this.password = password;
         this.accountRole = accountRole;
         this.accountState = accountState;
         this.providerType = providerType;

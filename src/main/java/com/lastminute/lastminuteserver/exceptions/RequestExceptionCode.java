@@ -14,6 +14,7 @@ public enum RequestExceptionCode {
     USER_NAME_NOT_ALLOWED(HttpStatus.UNPROCESSABLE_ENTITY, "사용할 수 없는 닉네임입니다."),
     USER_ILLEGAL_STATE(HttpStatus.UNPROCESSABLE_ENTITY, "상태 변경이 허용되지 않는 사용자입니다."),
     USER_CANNOT_BEHAVE(HttpStatus.PRECONDITION_FAILED, "사용자가 변경할 수 있는 권한이 없습니다."),
+    PASSWORD_NOT_CORRECT(HttpStatus.NOT_FOUND, "비밀번호가 일치하지 않습니다"),
 
     FORBIDDEN_NAME_NOT_FOUND(HttpStatus.NOT_FOUND, "해당하는 금지 이름이 없습니다."),
     FORBIDDEN_NAME_ALREADY_EXIST(HttpStatus.CONFLICT, "이미 등록된 금지 이름입니다."),
