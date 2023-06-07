@@ -1,5 +1,6 @@
 package com.lastminute.lastminuteserver.user.presentation;
 
+import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.dto.UserCreateDto;
 import com.lastminute.lastminuteserver.user.dto.UserLoginDto;
 import com.lastminute.lastminuteserver.user.service.UserService;
@@ -11,6 +12,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
 
 @Slf4j
 @RequiredArgsConstructor

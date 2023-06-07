@@ -27,6 +27,9 @@ public class LoginUserResolver implements HandlerMethodArgumentResolver {
                                   WebDataBinderFactory binderFactory) throws Exception {
         User user =  userRepository.findByNickname(parameter.toString())
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
+        if (!user.getAuthenticated()){
+            throw RequestException.of(RequestExceptionCode.LOGIN_FIRST);
+        }
         return user.getId();
     }
 }

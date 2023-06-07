@@ -4,10 +4,9 @@ import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import static com.amazonaws.services.cloudformation.model.Replacement.False;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -47,6 +46,10 @@ public class User {
     @Enumerated(EnumType.STRING)
     ProviderType providerType;
 
+    @Setter
+    @NotNull
+    private Boolean authenticated = false;
+
     public void withdraw() {
         this.updateProfile(WITH_DRAWN_NICKNAME, null);
         this.accountState = AccountState.WITHDRAWN;
@@ -64,6 +67,7 @@ public class User {
         this.nickname = nickname;
         this.email = email;
     }
+
 
     @Builder
     public User(String nickname, String email, String password,

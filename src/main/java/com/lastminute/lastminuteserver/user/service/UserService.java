@@ -9,6 +9,7 @@ import com.lastminute.lastminuteserver.user.dto.UserLoginDto;
 import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -70,6 +71,13 @@ public class UserService {
         if (user.getPassword().equals(userLoginDto.getPassword())){
             throw RequestException.of(RequestExceptionCode.USER_NOT_FOUND);
         }
+        user.setAuthenticated(true);
+    }
+
+    @Scheduled(cron = "0 0 0 0 * *")
+    public void logout(){
+        userRepository.findAllByAuthenticated(true).stream()
+                .forEach(user -> user.setAuthenticated(false));
     }
 
     public boolean isActivateUser(Long userId) {
