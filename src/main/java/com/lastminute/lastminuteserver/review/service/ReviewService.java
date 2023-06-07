@@ -10,6 +10,7 @@ import com.lastminute.lastminuteserver.review.dto.ReviewResponseDto;
 import com.lastminute.lastminuteserver.review.repository.ReviewRepository;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
+import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,11 +25,12 @@ public class ReviewService {
     private final ReviewRepository reviewRepository;
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final UserService userService;
 
     @Transactional
     public ReviewResponseDto createReview(Long productId, Long userId, ReviewRequestDto reviewRequestDto){
         Product product = validateProduct(productId);
-        User user = getUser(userId);
+        User user = userService.authenticate(userId);
 
         Review review = reviewRepository.save(
                 Review.builder()
@@ -64,7 +66,7 @@ public class ReviewService {
                                           ReviewRequestDto reviewRequestDto){
         validateProduct(productId);
         Review review = valiedateReview(reviewId);
-        User user = getUser(userId);
+        User user = userService.authenticate(userId);
 
         if(review.getUser() != user){
             throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
@@ -80,7 +82,7 @@ public class ReviewService {
     public void deleteReview(Long productId, Long reviewId, Long userId){
         valiedateReview(productId);
         Review review = valiedateReview(reviewId);
-        User user = getUser(userId);
+        User user = userService.authenticate(userId);
         if(review.getUser() != user){
             throw RequestException.of(RequestExceptionCode.USER_CANNOT_BEHAVE);
         }
@@ -96,9 +98,5 @@ public class ReviewService {
     private Product validateProduct(Long productId){
         return productRepository.findById(productId)
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
-    }
-
-    private User getUser(Long userId){
-        return userRepository.findById(userId).get();
     }
 }

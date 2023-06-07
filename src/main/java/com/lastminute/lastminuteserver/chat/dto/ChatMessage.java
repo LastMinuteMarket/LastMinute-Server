@@ -1,14 +1,13 @@
 package com.lastminute.lastminuteserver.chat.dto;
 
-import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+@Setter
 @Getter
-@Builder
-public class ChatDto {
+public class ChatMessage {
     private String roomId;
     private String sender;
-    @Setter
     private String message;
+    private String sort;
 }

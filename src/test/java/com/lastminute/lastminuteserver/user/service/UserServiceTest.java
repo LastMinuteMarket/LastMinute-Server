@@ -3,7 +3,6 @@ package com.lastminute.lastminuteserver.user.service;
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.user.domain.AccountRole;
 import com.lastminute.lastminuteserver.user.domain.AccountState;
-import com.lastminute.lastminuteserver.user.domain.ProviderType;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.dto.UserCreateDto;
 import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
@@ -54,7 +53,8 @@ public class UserServiceTest {
             UserCreateDto request = UserCreateDto.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
                     .build();
 
             User createdUser = request.toEntity();
@@ -77,7 +77,8 @@ public class UserServiceTest {
             // given
             UserCreateDto request = UserCreateDto.builder()
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
                     .build();
             User createdUser = request.toEntity();
             Long userId = 412L;
@@ -104,7 +105,8 @@ public class UserServiceTest {
             final String name = "탈퇴한 사용자";
             UserCreateDto request = UserCreateDto.builder()
                     .nickname(name)
-                    .providerType(ProviderType.KAKAO)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
                     .build();
             User createdUser = request.toEntity();
             Long userId = 412L;
@@ -131,10 +133,13 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 5326L;
             ReflectionTestUtils.setField(user, "id", userId);
 
@@ -167,10 +172,14 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 5326L;
             ReflectionTestUtils.setField(user, "id", userId);
 
@@ -198,10 +207,14 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 5326L;
             ReflectionTestUtils.setField(user, "id", userId);
 
@@ -223,10 +236,14 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 5326L;
             ReflectionTestUtils.setField(user, "id", userId);
 
@@ -250,10 +267,14 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 1512L;
             ReflectionTestUtils.setField(user, "id", userId);
 
@@ -302,10 +323,14 @@ public class UserServiceTest {
             User user = User.builder()
                     .email("myemail@gmail.com")
                     .nickname("james")
-                    .providerType(ProviderType.KAKAO)
-                    .accountRole(AccountRole.USER)
-                    .accountState(AccountState.NORMAL)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
+//                    .accountRole(AccountRole.USER)
+//                    .accountState(AccountState.NORMAL)
                     .build();
+            user.setAccountRole(AccountRole.USER);
+            user.setAccountState(AccountState.NORMAL);
+
             Long userId = 1512L;
             String tryName = "root";
             ReflectionTestUtils.setField(user, "id", userId);
@@ -329,7 +354,8 @@ public class UserServiceTest {
             User user = User.builder()
 //                    .email(dto.email())
                     .nickname(dto.nickname())
-                    .providerType(ProviderType.KAKAO)
+                    .password("password")
+//                    .providerType(ProviderType.KAKAO)
                     .build();
 
             ReflectionTestUtils.setField(user, "id", dto.userId());

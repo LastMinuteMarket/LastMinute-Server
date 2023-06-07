@@ -1,41 +1,47 @@
 package com.lastminute.lastminuteserver.chat.service;
 
-import com.lastminute.lastminuteserver.chat.domain.entity.ChatRoom;
-import com.lastminute.lastminuteserver.chat.repository.ChatRepository;
-import com.lastminute.lastminuteserver.chat.repository.ChatRoomRepository;
-import com.lastminute.lastminuteserver.exceptions.RequestException;
-import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
-import com.lastminute.lastminuteserver.product.domain.Product;
-import com.lastminute.lastminuteserver.user.domain.User;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
+import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
+import java.util.*;
+
 @RequiredArgsConstructor
 @Service
 public class ChatService {
-    private final ChatRoomRepository chatRoomRepository;
-    private final ChatRepository chatRepository;
 
-    public ChatRoom findByRoomId(Long roomId){
-        return chatRoomRepository.findById(roomId)
-                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
+    private final ObjectMapper objectMapper;
+    private Map<String, ChatRoom> chatRoomMap;
+
+    @PostConstruct
+    private void init(){
+        chatRoomMap = new LinkedHashMap<>();
     }
 
-    public ChatRoom createRoom(User buyer, User seller, Product product){
+    public List<ChatRoom> findAllRoom(){
+        return new ArrayList<>(chatRoomMap.values());
+    }
+
+    public ChatRoom findByRoomId(String roomId){
+        return chatRoomMap.get(roomId);
+    }
+
+    public ChatRoom createRoom(){
+        String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
-                .Buyer(buyer)
-                .Seller(seller)
-                .product(product)
-                .build();
-        chatRoomRepository.save(chatRoom);
+                        .id(randomId)
+                        .build();
+        chatRoomMap.put(randomId, chatRoom);
         return chatRoom;
     }
 
     public <T> void sendMessage(WebSocketSession session, T message){
         try {
-            session.sendMessage(new TextMessage(message.toString()));
+            session.sendMessage(new TextMessage(objectMapper.writeValueAsString(message)));
         } catch (Exception e){
             e.printStackTrace();
         }

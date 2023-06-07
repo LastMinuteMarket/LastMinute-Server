@@ -5,10 +5,7 @@ import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -163,7 +160,7 @@ public class Product {
     }
 
     @Builder
-    public Product(Long writerId,
+    public Product(User writer,
                    String placementTitle,
                    String placementRoadAddress,
                    String menu,
@@ -172,9 +169,9 @@ public class Product {
                    LocalDateTime reservedTime,
                    ReservationType reservationType,
                    Integer pricePaid,
-                   Integer priceNow,
-                   ProductState productState) {
-        this.writerId = writerId;
+                   Integer priceNow) {
+//        this.writerId = writerId;
+        this.writer = writer;
         this.placementTitle = placementTitle;
         this.placementRoadAddress = placementRoadAddress;
         this.menu = menu;
@@ -184,6 +181,5 @@ public class Product {
         this.reservationType = reservationType;
         this.pricePaid = pricePaid;
         this.priceNow = priceNow;
-        this.productState = productState;
     }
 }

@@ -39,20 +39,22 @@ public class ProductService {
 
     private final UserService userService;
     private final PlacementService placementService;
-    private final ImageFileService imageFileService;
+//    private final ImageFileService imageFileService;
     private final ProductLikeRepository productLikeRepository;
-    private final UserRepository userRepository;
 
     @Transactional
     public ProductAllDto createProduct(Long writerId, ProductCreateDto request) {
         //TODO : 이미지 업로드
         PlacementDto placement = placementService.createIfNotExist(request.placement());
+        User user = userService.authenticate(writerId);
+
         if (!userService.isActivateUser(writerId)) {
             throw RequestException.of(RequestExceptionCode.USER_ILLEGAL_BEHAVIOR);
         }
 
         Product product = Product.builder()
-                .writerId(writerId)
+                .writer(user)
+//                .writerId(writerId)
                 .placementTitle(placement.title())
                 .placementRoadAddress(placement.roadAddress())
                 .menu(request.detail().menu())
@@ -126,8 +128,9 @@ public class ProductService {
         return ProductAllDto.of(product);
     }
 
-    public void deleteProduct(Long userId, Long productId) {
+    public void deleteProduct(Long productId, Long userId) {
         Product product = findProductInternal(productId);
+        User user = userService.authenticate(userId);
 
         if (!product.getProductState().isVisible()) {
             throw RequestException.of(RequestExceptionCode.PRODUCT_ALREADY_HIDDEN);
@@ -142,8 +145,9 @@ public class ProductService {
     }
 
     @Transactional
-    public void likeProduct(Long userId, Long productId) {
+    public void likeProduct(Long productId, Long userId) {
         Product product = findProductInternal(productId);
+        User user = userService.authenticate(userId);
 
         ProductLike productLike = ProductLike.builder()
                 .productId(productId)
@@ -153,9 +157,9 @@ public class ProductService {
     }
 
     @Transactional
-    public void removeLikeProduct(Long userId, Long productId) {
+    public void removeLikeProduct(Long productId, Long userId) {
         Product product = findProductInternal(productId);
-        User user = getUser(userId);
+        User user = userService.authenticate(userId);
 
         ProductLike productLike = productLikeRepository.findByUserAndProduct(user, product)
                         .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_LIKE_NOT_FOUND));
@@ -173,10 +177,5 @@ public class ProductService {
     private Product findProductInternal(Long productId) {
         return productRepository.findById(productId)
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_NOT_FOUND));
-    }
-
-    private User getUser(Long userId){
-        return userRepository.findById(userId)
-                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
     }
 }

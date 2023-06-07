@@ -15,9 +15,9 @@ public class UserTest {
         // given
         User user = User.builder()
                 .nickname("james")
-                .providerType(ProviderType.KAKAO)
-                .accountState(AccountState.NORMAL)
+                .password("password")
                 .build();
+        user.setAccountState(AccountState.NORMAL);
 
         // when
         user.withdraw();
@@ -33,9 +33,9 @@ public class UserTest {
         // given
         User user = User.builder()
                 .nickname("james")
-                .providerType(ProviderType.KAKAO)
-                .accountState(AccountState.WITHDRAWN)
+                .password("password")
                 .build();
+        user.setAccountState(AccountState.WITHDRAWN);
 
         // when, then
         assertThatThrownBy(() -> user.updateProfile("nick", "test@gmail.com"))

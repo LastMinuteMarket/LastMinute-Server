@@ -4,7 +4,9 @@ import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
 import com.lastminute.lastminuteserver.purchase.domain.Purchase;
 import com.lastminute.lastminuteserver.purchase.dto.PurchaseCreateDto;
+import org.springframework.stereotype.Service;
 
+@Service
 public class PgAgency {
     public Purchase createPurchase(PurchaseCreateDto purchaseCreateDto){
         if (!tryCreatePurchase(purchaseCreateDto)){
