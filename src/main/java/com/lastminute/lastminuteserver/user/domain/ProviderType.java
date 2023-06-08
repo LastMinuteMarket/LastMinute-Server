@@ -8,6 +8,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ProviderType implements Convertable {
 
+    DIRECT("DIRECT"),
     KAKAO("KAKAO");
 
     private final String convertKey;

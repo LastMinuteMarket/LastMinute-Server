@@ -5,15 +5,14 @@ import com.lastminute.lastminuteserver.user.domain.User;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.chrono.ChronoLocalDate;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
@@ -33,12 +32,12 @@ public class Product {
     @JoinColumn(name = "writer_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User writer;
 
-    @Column(name = "wrier_id")
+    @Column(name = "writer_id")
     private Long writerId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumns ({
-        @JoinColumn(name = "placement_title", referencedColumnName = "menu", insertable = false, updatable = false),
+        @JoinColumn(name = "placement_title", referencedColumnName = "title", insertable = false, updatable = false),
         @JoinColumn(name = "placement_road_address", referencedColumnName = "road_address", insertable = false, updatable = false)
     })
     private Placement placement;
@@ -108,7 +107,7 @@ public class Product {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
     private final Set<ProductImage> images = new HashSet<>();
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "product", orphanRemoval = true)
     private final Set<ProductLike> likes = new HashSet<>();
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "product")
@@ -142,8 +141,26 @@ public class Product {
         this.views++;
     }
 
+    public void addProductLike(ProductLike productLike){
+        this.likes.add(productLike);
+    }
+
+    public void removeProductLike(ProductLike productLike){
+        this.likes.remove(productLike);
+    }
+
+    public void applyPriceSchedule(LocalDate now){
+        int diff = now.compareTo(ChronoLocalDate.from(this.createdAt));
+        for (PriceSchedule priceSchedule : priceSchedules){
+            // TODO: applyAt이 30일 이하인지 확인 필요. && 가격 미니멈?
+            if (diff % (priceSchedule.getScheduleId().getApplyAt().getDayOfMonth()) == 0){
+                this.priceNow -= priceSchedule.getPrice();
+            }
+        }
+    }
+
     @Builder
-    public Product(Long writerId,
+    public Product(User writer,
                    String placementTitle,
                    String placementRoadAddress,
                    String menu,
@@ -152,9 +169,9 @@ public class Product {
                    LocalDateTime reservedTime,
                    ReservationType reservationType,
                    Integer pricePaid,
-                   Integer priceNow,
-                   ProductState productState) {
-        this.writerId = writerId;
+                   Integer priceNow) {
+//        this.writerId = writerId;
+        this.writer = writer;
         this.placementTitle = placementTitle;
         this.placementRoadAddress = placementRoadAddress;
         this.menu = menu;
@@ -164,6 +181,5 @@ public class Product {
         this.reservationType = reservationType;
         this.pricePaid = pricePaid;
         this.priceNow = priceNow;
-        this.productState = productState;
     }
 }

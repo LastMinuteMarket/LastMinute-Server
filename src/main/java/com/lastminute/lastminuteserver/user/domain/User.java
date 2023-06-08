@@ -2,16 +2,9 @@ package com.lastminute.lastminuteserver.user.domain;
 
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
-import com.lastminute.lastminuteserver.product.domain.Product;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-
-import java.util.HashSet;
-import java.util.Set;
+import lombok.*;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,19 +26,29 @@ public class User {
     private String email;
 
     @NotNull
+    @Column(length = 12)
+    private String password;
+
+    @Setter
+    @NotNull
     @Column(length = 5)
     @Enumerated(EnumType.STRING)
     AccountRole accountRole = AccountRole.USER;
 
+    @Setter
     @NotNull
     @Column(length = 10)
     @Enumerated(EnumType.STRING)
     AccountState accountState = AccountState.NORMAL;
 
+//    @NotNull
+//    @Column(length = 10)
+//    @Enumerated(EnumType.STRING)
+//    ProviderType providerType;
+
+    @Setter
     @NotNull
-    @Column(length = 10)
-    @Enumerated(EnumType.STRING)
-    ProviderType providerType;
+    private Boolean authenticated = false;
 
     public void withdraw() {
         this.updateProfile(WITH_DRAWN_NICKNAME, null);
@@ -65,12 +68,14 @@ public class User {
         this.email = email;
     }
 
+
     @Builder
-    public User(String nickname, String email, AccountRole accountRole, AccountState accountState, ProviderType providerType) {
+    public User(String nickname, String email, String password) {
         this.nickname = nickname;
         this.email = email;
-        this.accountRole = accountRole;
-        this.accountState = accountState;
-        this.providerType = providerType;
+        this.password = password;
+//        this.accountRole = accountRole;
+//        this.accountState = accountState;
+//        this.providerType = providerType;
     }
 }

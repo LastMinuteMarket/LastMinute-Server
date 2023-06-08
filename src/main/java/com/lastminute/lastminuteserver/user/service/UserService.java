@@ -5,11 +5,17 @@ import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.user.domain.AccountState;
 import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.dto.UserCreateDto;
+import com.lastminute.lastminuteserver.user.dto.UserLoginDto;
 import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class UserService {
@@ -22,11 +28,7 @@ public class UserService {
     public UserProfileDto createNormalUser(UserCreateDto userCreate) {
         validateUserName(userCreate.nickname());
 
-        User user = User.builder()
-                .email(userCreate.email())
-                .nickname(userCreate.nickname())
-                .providerType(userCreate.providerType())
-                .build();
+        User user = userCreate.toEntity();
 
         user = userRepository.save(user);
         return UserProfileDto.of(user);
@@ -68,9 +70,39 @@ public class UserService {
         return UserProfileDto.of(user);
     }
 
+    public UserProfileDto login(UserLoginDto userLoginDto) {
+        User user = getUserByNickname(userLoginDto.getNickname());
+        if (!user.getPassword().equals(userLoginDto.getPassword())){
+            throw RequestException.of(RequestExceptionCode.PASSWORD_NOT_CORRECT);
+        }
+        user.setAuthenticated(true);
+        userRepository.saveAndFlush(user);
+
+        return UserProfileDto.of(user);
+    }
+
+    @Scheduled(cron = "0 */5 * * * *") // 매 5분마다 로그아웃. (테스트는 매 5초마다로 진행)
+    public void logout(){
+        log.info("logout 작동");
+//        List<User> userList = userRepository.findAllByAuthenticated(true);
+//        for (User user : userList){
+//            user.setAuthenticated(false);
+//        }
+//        userRepository.saveAllAndFlush(userList);
+    }
+
     public boolean isActivateUser(Long userId) {
         User user = findUserInternal(userId);
-        return !user.getAccountState().equals(AccountState.NORMAL);
+        return user.getAccountState().equals(AccountState.NORMAL);
+    }
+
+    public User authenticate(Long userId){
+        User user =  userRepository.findById(userId)
+                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
+        if (!user.getAuthenticated()){
+            throw RequestException.of(RequestExceptionCode.LOGIN_FIRST);
+        }
+        return user;
     }
 
     private User findUserInternal(Long userId) {
@@ -78,4 +110,8 @@ public class UserService {
                 .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
     }
 
+    private User getUserByNickname(String nickname){
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
+    }
 }

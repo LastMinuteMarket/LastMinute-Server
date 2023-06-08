@@ -31,6 +31,7 @@ public class Purchase {
     @Enumerated(EnumType.ORDINAL)
     InstallmentPeriod installmentPeriod;
 
+    @Setter
     @NotNull
     @Column(length = 10)
     @Enumerated(EnumType.STRING)

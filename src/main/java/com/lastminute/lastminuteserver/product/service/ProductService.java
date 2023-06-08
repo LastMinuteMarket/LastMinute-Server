@@ -1,26 +1,32 @@
 package com.lastminute.lastminuteserver.product.service;
 
-import com.lastminute.lastminuteserver.cloudfile.service.ImageFileService;
 import com.lastminute.lastminuteserver.exceptions.RequestException;
 import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
+import com.lastminute.lastminuteserver.placement.dto.PlacementDto;
 import com.lastminute.lastminuteserver.placement.service.PlacementService;
 import com.lastminute.lastminuteserver.product.domain.PriceSchedule;
-import com.lastminute.lastminuteserver.product.domain.ProductState;
-import com.lastminute.lastminuteserver.product.dto.PriceScheduleDto;
-import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
-import com.lastminute.lastminuteserver.placement.dto.PlacementDto;
-import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
-import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
-import com.lastminute.lastminuteserver.product.repository.ProductRepository;
 import com.lastminute.lastminuteserver.product.domain.Product;
+import com.lastminute.lastminuteserver.product.domain.ProductLike;
+import com.lastminute.lastminuteserver.product.domain.ProductState;
+import com.lastminute.lastminuteserver.product.dto.*;
+import com.lastminute.lastminuteserver.product.repository.ProductLikeRepository;
+import com.lastminute.lastminuteserver.product.repository.ProductRepository;
+import com.lastminute.lastminuteserver.user.domain.User;
+import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.*;
+import org.locationtech.jts.io.ParseException;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Slice;
+import org.springframework.data.domain.SliceImpl;
 import org.springframework.data.geo.Point;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -36,18 +42,27 @@ public class ProductService {
 
     private final UserService userService;
     private final PlacementService placementService;
-    private final ImageFileService imageFileService;
+//    private final ImageFileService imageFileService;
+    private final ProductLikeRepository productLikeRepository;
 
     @Transactional
     public ProductAllDto createProduct(Long writerId, ProductCreateDto request) {
         //TODO : 이미지 업로드
-        PlacementDto placement = placementService.createIfNotExist(request.placement());
+        PlacementDto placement = null;
+        try {
+            placement = placementService.createIfNotExist(request.placement());
+        } catch (ParseException e) {
+            throw RequestException.of(RequestExceptionCode.INVALID_PLACEMENT_LOCATION);
+        }
+        User user = userService.authenticate(writerId);
+
         if (!userService.isActivateUser(writerId)) {
             throw RequestException.of(RequestExceptionCode.USER_ILLEGAL_BEHAVIOR);
         }
 
         Product product = Product.builder()
-                .writerId(writerId)
+                .writer(user)
+//                .writerId(writerId)
                 .placementTitle(placement.title())
                 .placementRoadAddress(placement.roadAddress())
                 .menu(request.detail().menu())
@@ -61,7 +76,18 @@ public class ProductService {
 
         putPriceSchedules(product, request.priceSchedules());
         product = productRepository.save(product);
-        return ProductAllDto.of(product);
+
+        // TODO : 리팩토링
+//        return ProductAllDto.of(product);
+        return ProductAllDto.builder()
+                .productId(product.getId())
+                .priceNow(product.getPriceNow())
+                .writer(UserProfileDto.of(product.getWriter()))
+                .placement(placement)
+                .detail(ProductDetailDto.of(product))
+                .images(new ArrayList<>())
+                .build();
+
     }
 
     private static void putPriceSchedules(Product product, List<PriceScheduleDto> priceScheduleDtos) {
@@ -121,8 +147,9 @@ public class ProductService {
         return ProductAllDto.of(product);
     }
 
-    public void deleteProduct(Long userId, Long productId) {
+    public void deleteProduct(Long productId, Long userId) {
         Product product = findProductInternal(productId);
+        User user = userService.authenticate(userId);
 
         if (!product.getProductState().isVisible()) {
             throw RequestException.of(RequestExceptionCode.PRODUCT_ALREADY_HIDDEN);
@@ -134,6 +161,36 @@ public class ProductService {
 
         product.setProductState(ProductState.HIDDEN);
         productRepository.save(product);
+    }
+
+    @Transactional
+    public void likeProduct(Long productId, Long userId) {
+        Product product = findProductInternal(productId);
+        User user = userService.authenticate(userId);
+
+        ProductLike productLike = ProductLike.builder()
+                .productId(productId)
+                .userId(userId)
+                .build();
+        product.addProductLike(productLike);
+    }
+
+    @Transactional
+    public void removeLikeProduct(Long productId, Long userId) {
+        Product product = findProductInternal(productId);
+        User user = userService.authenticate(userId);
+
+        ProductLike productLike = productLikeRepository.findByUserAndProduct(user, product)
+                        .orElseThrow(() -> RequestException.of(RequestExceptionCode.PRODUCT_LIKE_NOT_FOUND));
+        product.removeProductLike(productLike);
+    }
+
+    @Scheduled(cron = "0 0 0 * * *")
+    public void applyPriceScheduling(){
+        LocalDate now = LocalDate.now();
+        productRepository.findAll().stream()
+                .filter(product -> product.getProductState().isPurchasable() == true)
+                .forEach(product -> product.applyPriceSchedule(now));
     }
 
     private Product findProductInternal(Long productId) {
