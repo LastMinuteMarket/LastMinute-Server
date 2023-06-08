@@ -1,8 +1,6 @@
 package com.lastminute.lastminuteserver.chat.presentation;
 
-import com.amazonaws.Response;
-import com.lastminute.lastminuteserver.chat.domain.ChatRoom;
-import com.lastminute.lastminuteserver.chat.dto.ChatRoomDto;
+import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
 import com.lastminute.lastminuteserver.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -18,14 +16,14 @@ public class ChatController {
     private final ChatService chatService;
 
     @PostMapping()
-    public ResponseEntity<ChatRoomDto> createRoom(@RequestParam Long userId, @RequestParam String name){
-        ChatRoomDto chatRoomDto = chatService.createRoom(userId, name);
-        return ResponseEntity.status(HttpStatus.CREATED).body(chatRoomDto);
+    public ResponseEntity<ChatRoom> createRoom(@RequestParam Long userId, @RequestParam String name){
+        ChatRoom chatRoom = chatService.createRoom(name);
+        return ResponseEntity.status(HttpStatus.CREATED).body(chatRoom);
     }
 
     @GetMapping()
-    public ResponseEntity<List<ChatRoomDto>> findAllRoom(@RequestParam Long userId){
-        List<ChatRoomDto> chatRoomDtoList = chatService.findAllRoom(userId);
+    public ResponseEntity<List<ChatRoom>> findAllRoom(@RequestParam Long userId){
+        List<ChatRoom> chatRoomDtoList = chatService.findAllRoom(userId);
         return ResponseEntity.status(HttpStatus.OK).body(chatRoomDtoList);
     }
 

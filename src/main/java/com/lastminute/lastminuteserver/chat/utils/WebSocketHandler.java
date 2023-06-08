@@ -2,7 +2,7 @@ package com.lastminute.lastminuteserver.chat.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastminute.lastminuteserver.chat.dto.ChatMessageDto;
-import com.lastminute.lastminuteserver.chat.domain.ChatRoom;
+import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
 import com.lastminute.lastminuteserver.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
