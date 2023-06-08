@@ -43,7 +43,7 @@ public class ProductController {
                 .ok(ResponseDto.emptySuccess());
     }
 
-    @DeleteMapping("/{productId}/like/delete")
+    @DeleteMapping("/{productId}/like")
     ResponseEntity<ResponseDto<?>> removeLikeProduct(@PathVariable("productId") Long productId,
                                                      @RequestParam Long userId){
         productService.removeLikeProduct(productId, userId);

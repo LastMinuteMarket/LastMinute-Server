@@ -83,11 +83,12 @@ public class UserService {
 
     @Scheduled(cron = "0 */5 * * * *") // 매 5분마다 로그아웃. (테스트는 매 5초마다로 진행)
     public void logout(){
-        List<User> userList = userRepository.findAllByAuthenticated(true);
-        for (User user : userList){
-            user.setAuthenticated(false);
-        }
-        userRepository.saveAllAndFlush(userList);
+        log.info("logout 작동");
+//        List<User> userList = userRepository.findAllByAuthenticated(true);
+//        for (User user : userList){
+//            user.setAuthenticated(false);
+//        }
+//        userRepository.saveAllAndFlush(userList);
     }
 
     public boolean isActivateUser(Long userId) {
