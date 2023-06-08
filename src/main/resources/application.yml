@@ -6,9 +6,9 @@ spring:
       - classpath:/cloud.yml
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-#    url: jdbc:mysql://mysql-db:3314/lastminute?
-#    username: root
-#    password: p@ssword
+    url: jdbc:mysql://mysql.default.svc.cluster.local:3306/lastminute?createDatabaseIfNotExist=true&autoReconnect=true&useSSL=false&allowPublicKeyRetrieval=true
+    username: root
+    password: p@ssword
   jpa:
     hibernate:
       ddl-auto: create
