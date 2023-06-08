@@ -4,12 +4,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class ChatService {
@@ -26,8 +28,8 @@ public class ChatService {
         return new ArrayList<>(chatRoomMap.values());
     }
 
-    public ChatRoom findByRoomId(String roomId){
-        return chatRoomMap.get(roomId);
+    public ChatRoom findByChatRoomId(String chatRoomId){
+        return chatRoomMap.get(chatRoomId);
     }
 
     public ChatRoom createRoom(){

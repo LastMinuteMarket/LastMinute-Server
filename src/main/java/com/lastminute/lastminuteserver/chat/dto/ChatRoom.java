@@ -10,14 +10,18 @@ import java.util.Set;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Builder
 public class ChatRoom {
     private String id;
 
     private Set<WebSocketSession> sessionSet = new HashSet<>();
 
+    @Builder
+    public ChatRoom(String id){
+        this.id = id;
+    }
+
     public void handleAction(WebSocketSession session, ChatMessage dto, ChatService chatService){
-        if (dto.getSort() == "ENTER"){
+        if (dto.getSort().equals("ENTER")){
             sessionSet.add(session);
             dto.setMessage(dto.getMessage()+" 채팅이 시작되었어요");
         }
