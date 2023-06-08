@@ -2,6 +2,7 @@ package com.lastminute.lastminuteserver.chat.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
+import com.lastminute.lastminuteserver.user.service.UserService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,6 +18,7 @@ import java.util.*;
 public class ChatService {
 
     private final ObjectMapper objectMapper;
+    private final UserService userService;
     private Map<String, ChatRoom> chatRoomMap;
 
     @PostConstruct
@@ -32,7 +34,8 @@ public class ChatService {
         return chatRoomMap.get(chatRoomId);
     }
 
-    public ChatRoom createRoom(){
+    public ChatRoom createRoom(Long userId){
+        userService.authenticate(userId);
         String randomId = UUID.randomUUID().toString();
         ChatRoom chatRoom = ChatRoom.builder()
                         .id(randomId)
