@@ -26,6 +26,7 @@ dependencies {
     compileOnly 'org.projectlombok:lombok'
 //    runtimeOnly 'com.h2database:h2'
     implementation 'mysql:mysql-connector-java:8.0.15'
+    implementation group: 'org.hibernate', name: 'hibernate-spatial', version: '6.2.4.Final'
 
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     annotationProcessor 'org.projectlombok:lombok'

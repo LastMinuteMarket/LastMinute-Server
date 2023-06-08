@@ -25,6 +25,8 @@ public enum RequestExceptionCode {
     PRODUCT_FORBIDDEN(HttpStatus.FORBIDDEN, "해당 상품에 대해 권한이 없습니다."),
     PRODUCT_MORE_THEN_LIMIT(HttpStatus.NOT_ACCEPTABLE, "해당 상품의 수량이 부족합니다"),
 
+    INVALID_PLACEMENT_LOCATION(HttpStatus.BAD_REQUEST, "유효하지 않은 주소 위치정보 입니다."),
+
     PAYMENT_NOT_FOUND(HttpStatus.NOT_FOUND, "해당 결제 내역과 일치하는 정보가 없습니다"),
     PAYMENT_CREATION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Pg사에서 발생한 에러로 결제에 실패했습니다."),
     PAYMENT_DELETION_FAILED(HttpStatus.INTERNAL_SERVER_ERROR, "Pg사에서 발생한 에러로 결제 취소에 실패했습니다."),

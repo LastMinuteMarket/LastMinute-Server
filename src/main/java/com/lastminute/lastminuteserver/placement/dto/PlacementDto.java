@@ -5,6 +5,7 @@ import com.lastminute.lastminuteserver.placement.domain.PlacementId;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import org.locationtech.jts.io.ParseException;
 import org.springframework.data.geo.Point;
 
 @Builder
@@ -23,13 +24,14 @@ public record PlacementDto (
     @NotNull(message = "사용처의 y 좌표를 입력해주세요.")
     Double pointY
 ) {
-    public Placement toEntity() {
+    public Placement toEntity() throws ParseException {
         final PlacementId addressId = getEntityId();
-        final Point location = new Point(this.pointX, this.pointY);
+//        final Point location = new Point(this.pointX, this.pointY);
 
         return Placement.builder()
                 .placementId(addressId)
-                .location(location)
+                .pointX(pointX)
+                .pointY(pointY)
                 .build();
     }
 

@@ -8,15 +8,14 @@ import com.lastminute.lastminuteserver.product.domain.PriceSchedule;
 import com.lastminute.lastminuteserver.product.domain.Product;
 import com.lastminute.lastminuteserver.product.domain.ProductLike;
 import com.lastminute.lastminuteserver.product.domain.ProductState;
-import com.lastminute.lastminuteserver.product.dto.PriceScheduleDto;
-import com.lastminute.lastminuteserver.product.dto.ProductAllDto;
-import com.lastminute.lastminuteserver.product.dto.ProductCreateDto;
-import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
+import com.lastminute.lastminuteserver.product.dto.*;
 import com.lastminute.lastminuteserver.product.repository.ProductLikeRepository;
 import com.lastminute.lastminuteserver.product.repository.ProductRepository;
 import com.lastminute.lastminuteserver.user.domain.User;
+import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.io.ParseException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
 import org.springframework.data.domain.SliceImpl;
@@ -27,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -48,7 +48,12 @@ public class ProductService {
     @Transactional
     public ProductAllDto createProduct(Long writerId, ProductCreateDto request) {
         //TODO : 이미지 업로드
-        PlacementDto placement = placementService.createIfNotExist(request.placement());
+        PlacementDto placement = null;
+        try {
+            placement = placementService.createIfNotExist(request.placement());
+        } catch (ParseException e) {
+            throw RequestException.of(RequestExceptionCode.INVALID_PLACEMENT_LOCATION);
+        }
         User user = userService.authenticate(writerId);
 
         if (!userService.isActivateUser(writerId)) {
@@ -71,7 +76,18 @@ public class ProductService {
 
         putPriceSchedules(product, request.priceSchedules());
         product = productRepository.save(product);
-        return ProductAllDto.of(product);
+
+        // TODO : 리팩토링
+//        return ProductAllDto.of(product);
+        return ProductAllDto.builder()
+                .productId(product.getId())
+                .priceNow(product.getPriceNow())
+                .writer(UserProfileDto.of(product.getWriter()))
+                .placement(placement)
+                .detail(ProductDetailDto.of(product))
+                .images(new ArrayList<>())
+                .build();
+
     }
 
     private static void putPriceSchedules(Product product, List<PriceScheduleDto> priceScheduleDtos) {
