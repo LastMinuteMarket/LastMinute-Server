@@ -2,11 +2,12 @@ package com.lastminute.lastminuteserver.placement.dto;
 
 import com.lastminute.lastminuteserver.placement.domain.Placement;
 import com.lastminute.lastminuteserver.placement.domain.PlacementId;
+import com.lastminute.lastminuteserver.utils.SpatialUtil;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Builder;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
-import org.springframework.data.geo.Point;
 
 @Builder
 public record PlacementDto (
@@ -26,12 +27,11 @@ public record PlacementDto (
 ) {
     public Placement toEntity() throws ParseException {
         final PlacementId addressId = getEntityId();
-//        final Point location = new Point(this.pointX, this.pointY);
+        final Point location = SpatialUtil.convertPoint(pointX, pointY);
 
         return Placement.builder()
                 .placementId(addressId)
-                .pointX(pointX)
-                .pointY(pointY)
+                .location(location)
                 .build();
     }
 
