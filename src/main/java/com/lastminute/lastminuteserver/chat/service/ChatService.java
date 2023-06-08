@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lastminute.lastminuteserver.chat.domain.ChatMessage;
 import com.lastminute.lastminuteserver.chat.domain.ChatRoom;
+import com.lastminute.lastminuteserver.chat.dto.ChatMessageDto;
 import com.lastminute.lastminuteserver.chat.dto.ChatRoomDto;
 import com.lastminute.lastminuteserver.chat.repository.ChatMessageRepository;
 import com.lastminute.lastminuteserver.chat.repository.ChatRoomRepository;
@@ -19,7 +20,11 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
-import java.util.*;
+import java.time.LocalDateTime;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -65,14 +70,33 @@ public class ChatService {
     }
 
 
-    public <T> void sendMessage(WebSocketSession session, T chatMessageDto){
+    public <T> void sendMessage(WebSocketSession session, ChatMessageDto chatMessageDto){
         try {
+            ChatRoom chatRoom = chatRoomRepository.findById(chatMessageDto.getChatRoomId())
+                    .orElseThrow(() -> RequestException.of(RequestExceptionCode.CHATROOM_NOT_FOUND));
+            ChatMessage chatMessage = ChatMessage.builder()
+                    .chatRoom(chatRoom)
+                    .sender(getUser(chatMessageDto.getSender()))
+                    .receiver(getUser(chatMessageDto.getReceiver()))
+                    .message(chatMessageDto.getMessage())
+                    .build();
             session.sendMessage(new TextMessage(objectMapper.writeValueAsString(chatMessageDto)));
+
+            chatRoom.setReceiver(getUser(chatMessageDto.getReceiver()).getNickname());
+            chatRoom.setRecentMessage(chatMessage.getMessage());
+            chatRoom.setRecentlySentAt(LocalDateTime.now());
+            chatRoomRepository.saveAndFlush(chatRoom);
+            chatMessageRepository.saveAndFlush(chatMessage);
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private User getUser(String nickname){
+        return userRepository.findByNickname(nickname)
+                .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
     }
 
 }

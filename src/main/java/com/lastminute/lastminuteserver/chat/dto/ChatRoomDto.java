@@ -45,7 +45,7 @@ public class ChatRoomDto {
         sendMessage(chat, chatService);
     }
 
-    public <T> void sendMessage(T message, ChatService chatService){
+    public <T> void sendMessage(ChatMessageDto message, ChatService chatService){
         sessionSet.parallelStream()
                 .forEach(session -> chatService.sendMessage(session, message));
     }

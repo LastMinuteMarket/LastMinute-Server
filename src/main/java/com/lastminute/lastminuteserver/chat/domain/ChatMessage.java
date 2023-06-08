@@ -17,16 +17,16 @@ public class ChatMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "chatroom_id")
     private ChatRoom chatRoom;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "sender_id")
     private User sender;
 
     @Setter
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "receiver_id")
     private User receiver;
 
@@ -34,18 +34,16 @@ public class ChatMessage {
     private String message;
 
     @Column(nullable = false, updatable = false)
-    private LocalDateTime sentAt;
+    private LocalDateTime sentAt = LocalDateTime.now();
 
     @Builder
     public ChatMessage(ChatRoom chatRoom,
                        User sender,
                        User receiver,
-                       String message,
-                       LocalDateTime sentAt){
+                       String message){
         this.chatRoom = chatRoom;
         this.sender = sender;
         this.receiver = receiver;
         this.message = message;
-        this.sentAt = sentAt;
     }
 }

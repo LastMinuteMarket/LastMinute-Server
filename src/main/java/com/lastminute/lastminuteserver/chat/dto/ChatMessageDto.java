@@ -1,5 +1,6 @@
 package com.lastminute.lastminuteserver.chat.dto;
 
+import com.lastminute.lastminuteserver.chat.domain.ChatMessage;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -18,4 +19,5 @@ public class ChatMessageDto {
     private String receiver;
     private String message;
     private LocalDateTime localDateTime;
+
 }
