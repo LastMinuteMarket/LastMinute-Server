@@ -3,6 +3,8 @@ package com.lastminute.lastminuteserver.chat.dto;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Setter
 @Getter
 public class ChatMessageDto {
@@ -15,4 +17,5 @@ public class ChatMessageDto {
     private String sender;
     private String receiver;
     private String message;
+    private LocalDateTime localDateTime;
 }

@@ -2,7 +2,15 @@ package com.lastminute.lastminuteserver.chat.service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
+import com.lastminute.lastminuteserver.chat.domain.ChatMessage;
+import com.lastminute.lastminuteserver.chat.domain.ChatRoom;
+import com.lastminute.lastminuteserver.chat.dto.ChatRoomDto;
+import com.lastminute.lastminuteserver.chat.repository.ChatMessageRepository;
+import com.lastminute.lastminuteserver.chat.repository.ChatRoomRepository;
+import com.lastminute.lastminuteserver.exceptions.RequestException;
+import com.lastminute.lastminuteserver.exceptions.RequestExceptionCode;
+import com.lastminute.lastminuteserver.user.domain.User;
+import com.lastminute.lastminuteserver.user.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,6 +20,7 @@ import org.springframework.web.socket.WebSocketSession;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -19,7 +28,10 @@ import java.util.*;
 public class ChatService {
 
     private final ObjectMapper objectMapper;
-    private Map<String, ChatRoom> chatRoomMap;
+    private final ChatRoomRepository chatRoomRepository;
+    private final ChatMessageRepository chatMessageRepository;
+    private final UserRepository userRepository;
+    private Map<String, ChatRoomDto> chatRoomMap;
 
     @PostConstruct
     private void init() {
@@ -27,21 +39,29 @@ public class ChatService {
     }
 
     public List<ChatRoom> findAllRoom(Long userId){
-        return new ArrayList<>(chatRoomMap.values());
+        User user = userRepository.findById(userId)
+                        .orElseThrow(() -> RequestException.of(RequestExceptionCode.USER_NOT_FOUND));
+        return chatMessageRepository.findAll().stream()
+                .filter(c1 -> user.equals(c1.getReceiver()) || user.equals(c1.getSender()))
+                .map(c2 -> c2.getChatRoom())
+                .distinct()
+                .collect(Collectors.toList());
     }
 
-    public ChatRoom findByChatRoomId(String chatRoomId){
+    public ChatRoomDto findByChatRoomId(String chatRoomId){
         return chatRoomMap.get(chatRoomId);
     }
 
-    public ChatRoom createRoom(String name){
+    public ChatRoomDto createRoom(String name){
         String randomId = UUID.randomUUID().toString();
-        ChatRoom chatRoom = ChatRoom.builder()
+        ChatRoomDto chatRoomDto = ChatRoomDto.builder()
                         .chatRoomId(randomId)
                         .name(name)
                         .build();
-        chatRoomMap.put(randomId, chatRoom);
-        return chatRoom;
+        ChatRoom chatRoom = chatRoomDto.toEntity();
+        chatRoomRepository.saveAndFlush(chatRoom);
+        chatRoomMap.put(randomId, chatRoomDto);
+        return chatRoomDto;
     }
 
 
