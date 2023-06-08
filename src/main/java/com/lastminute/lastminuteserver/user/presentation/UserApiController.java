@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.*;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/v1/openapi/users")
+@RequestMapping(value = "/api/users")
 public class UserApiController {
 
     private final UserService userService;
