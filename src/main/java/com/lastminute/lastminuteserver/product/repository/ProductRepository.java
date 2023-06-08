@@ -3,9 +3,9 @@ package com.lastminute.lastminuteserver.product.repository;
 
 import com.lastminute.lastminuteserver.product.domain.Product;
 import com.lastminute.lastminuteserver.product.domain.ProductState;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.geo.Point;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
