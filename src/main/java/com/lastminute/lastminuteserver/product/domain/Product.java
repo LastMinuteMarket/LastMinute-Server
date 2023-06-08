@@ -32,12 +32,12 @@ public class Product {
     @JoinColumn(name = "writer_id", referencedColumnName = "id", insertable = false, updatable = false)
     private User writer;
 
-    @Column(name = "wrier_id")
+    @Column(name = "writer_id")
     private Long writerId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumns ({
-        @JoinColumn(name = "placement_title", referencedColumnName = "menu", insertable = false, updatable = false),
+        @JoinColumn(name = "placement_title", referencedColumnName = "title", insertable = false, updatable = false),
         @JoinColumn(name = "placement_road_address", referencedColumnName = "road_address", insertable = false, updatable = false)
     })
     private Placement placement;

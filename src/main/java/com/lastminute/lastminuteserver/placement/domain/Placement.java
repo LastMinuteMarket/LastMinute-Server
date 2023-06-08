@@ -9,7 +9,9 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.springframework.data.geo.Point;
+import org.locationtech.jts.geom.Point;
+import org.locationtech.jts.io.ParseException;
+import org.locationtech.jts.io.WKTReader;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -21,20 +23,26 @@ public class Placement {
     private PlacementId placementId;
 
     @NotNull
-    @Column
+    @Column(columnDefinition = "GEOMETRY")
     private Point location;
 
     @Builder
-    public Placement(PlacementId placementId, Point location) {
+    public Placement(PlacementId placementId, Double pointX, Double pointY) throws ParseException {
         this.placementId = placementId;
-        this.location = location;
+        location = (Point) new WKTReader().read(String.format("POINT(%s %s)", pointX, pointY));
     }
 
-    @Builder
-    public Placement(String title, String roadAddress, Point location) {
-        this(PlacementId.builder()
-                .title(title)
-                .roadAddress(roadAddress)
-                .build(), location);
-    }
+//    @Builder
+//    public Placement(PlacementId placementId, Point location) {
+//        this.placementId = placementId;
+//        this.location = location;
+//    }
+//
+//    @Builder
+//    public Placement(String title, String roadAddress, Point location) {
+//        this(PlacementId.builder()
+//                .title(title)
+//                .roadAddress(roadAddress)
+//                .build(), location);
+//    }
 }
