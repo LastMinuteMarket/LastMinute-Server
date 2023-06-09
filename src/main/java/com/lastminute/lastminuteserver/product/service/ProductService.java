@@ -80,7 +80,6 @@ public class ProductService {
 //        return ProductAllDto.of(product);
         return ProductAllDto.builder()
                 .productId(product.getId())
-                .priceNow(product.getPriceNow())
                 .writer(UserProfileDto.of(user))
                 .placement(placement)
                 .detail(ProductDetailDto.of(product))

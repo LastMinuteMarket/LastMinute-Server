@@ -51,6 +51,7 @@ public record ProductDetailDto (
                 .reservedTime(entity.getReservedTime())
                 .reservationType(entity.getReservationType())
                 .pricePaid(entity.getPricePaid())
+                .priceNow(entity.getPriceNow())
                 .build();
     }
 }

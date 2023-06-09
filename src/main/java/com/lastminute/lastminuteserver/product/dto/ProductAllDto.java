@@ -16,7 +16,6 @@ public record ProductAllDto(
         @NotNull UserProfileDto writer,
         @NotNull PlacementDto placement,
         @NotNull ProductDetailDto detail,
-        @NotNull Integer priceNow,
         @NotNull List<MultipartFile> images
 ) {
 
@@ -34,7 +33,6 @@ public record ProductAllDto(
                 .writer(UserProfileDto.of(entity.getWriter()))
                 .placement(PlacementDto.of(entity.getPlacement()))
                 .detail(ProductDetailDto.of(entity))
-                .priceNow(entity.getPriceNow())
                 .build();
     }
 }
