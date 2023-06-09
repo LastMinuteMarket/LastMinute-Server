@@ -3,11 +3,12 @@ package com.lastminute.lastminuteserver.product.presentation;
 import com.lastminute.lastminuteserver.common.ResponseDto;
 import com.lastminute.lastminuteserver.product.dto.ProductSummaryDto;
 import com.lastminute.lastminuteserver.product.service.ProductService;
+import com.lastminute.lastminuteserver.utils.SpatialUtil;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.geo.Point;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -31,7 +32,7 @@ public class SearchController {
             @RequestParam(required = false) LocalDateTime endTime,
             Pageable pageable
     ) {
-        Point location = new Point(lot, lat);
+        Point location = SpatialUtil.convertPoint(lat, lot);
         Slice<ProductSummaryDto> products;
         
         if (startTime != null && endTime != null) {

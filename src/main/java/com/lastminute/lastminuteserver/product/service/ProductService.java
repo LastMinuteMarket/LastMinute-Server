@@ -15,6 +15,7 @@ import com.lastminute.lastminuteserver.user.domain.User;
 import com.lastminute.lastminuteserver.user.dto.UserProfileDto;
 import com.lastminute.lastminuteserver.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.locationtech.jts.geom.Point;
 import org.locationtech.jts.io.ParseException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
@@ -61,8 +62,7 @@ public class ProductService {
         }
 
         Product product = Product.builder()
-                .writer(user)
-//                .writerId(writerId)
+                .writerId(writerId)
                 .placementTitle(placement.title())
                 .placementRoadAddress(placement.roadAddress())
                 .menu(request.detail().menu())
@@ -82,7 +82,7 @@ public class ProductService {
         return ProductAllDto.builder()
                 .productId(product.getId())
                 .priceNow(product.getPriceNow())
-                .writer(UserProfileDto.of(product.getWriter()))
+                .writer(UserProfileDto.of(user))
                 .placement(placement)
                 .detail(ProductDetailDto.of(product))
                 .images(new ArrayList<>())

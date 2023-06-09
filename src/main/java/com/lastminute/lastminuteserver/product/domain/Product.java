@@ -160,7 +160,7 @@ public class Product {
     }
 
     @Builder
-    public Product(User writer,
+    public Product(Long writerId,
                    String placementTitle,
                    String placementRoadAddress,
                    String menu,
@@ -170,8 +170,7 @@ public class Product {
                    ReservationType reservationType,
                    Integer pricePaid,
                    Integer priceNow) {
-//        this.writerId = writerId;
-        this.writer = writer;
+        this.writerId = writerId;
         this.placementTitle = placementTitle;
         this.placementRoadAddress = placementRoadAddress;
         this.menu = menu;

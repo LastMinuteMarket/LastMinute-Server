@@ -27,9 +27,9 @@ public class Placement {
     private Point location;
 
     @Builder
-    public Placement(PlacementId placementId, Double pointX, Double pointY) throws ParseException {
+    public Placement(PlacementId placementId, Point location) throws ParseException {
         this.placementId = placementId;
-        location = (Point) new WKTReader().read(String.format("POINT(%s %s)", pointX, pointY));
+        this.location = location;
     }
 
 //    @Builder
