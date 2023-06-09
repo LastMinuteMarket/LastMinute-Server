@@ -1,8 +1,8 @@
 package com.lastminute.lastminuteserver.chat.utils;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.lastminute.lastminuteserver.chat.dto.ChatRoom;
-import com.lastminute.lastminuteserver.chat.dto.ChatMessage;
+import com.lastminute.lastminuteserver.chat.dto.ChatMessageDto;
+import com.lastminute.lastminuteserver.chat.dto.ChatRoomDto;
 import com.lastminute.lastminuteserver.chat.service.ChatService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,12 +21,8 @@ public class WebSocketHandler extends TextWebSocketHandler {
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         String payload = message.getPayload();
-        ChatMessage chat = objectMapper.readValue(payload, ChatMessage.class);
-        log.info(chat.getMessage());
-        log.info(chat.getSender());
-        log.info(chat.getChatRoomId());
-        log.info(chat.getSort());
-        ChatRoom chatRoom = chatService.findByChatRoomId(chat.getChatRoomId());
-        chatRoom.handleAction(session, chat, chatService);
+        ChatMessageDto chat = objectMapper.readValue(payload, ChatMessageDto.class);
+        ChatRoomDto chatRoomDto = chatService.findByChatRoomId(chat.getChatRoomId());
+        chatRoomDto.handleAction(session, chat, chatService);
     }
 }
